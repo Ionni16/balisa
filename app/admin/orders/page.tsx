@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useAdmin } from "../AdminContext";
 import { Order } from "@/lib/types";
 import { formatPrice } from "@/lib/stripe";
-import { StatusBadge } from "../page";
+import { StatusBadge } from "../StatusBadge";
 import toast from "react-hot-toast";
 import { ChevronDown, ChevronUp, Search } from "lucide-react";
 

@@ -165,7 +165,7 @@ export default function AdminDashboard() {
   );
 }
 
-export function StatusBadge({ status }: { status: Order["status"] }) {
+function StatusBadge({ status }: { status: Order["status"] }) {
   const styles: Record<string, string> = {
     pending: "bg-white/10 text-white/50",
     paid: "bg-blue-900/50 text-blue-300",
