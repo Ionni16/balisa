@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useAdmin } from "./layout";
+import { useAdmin } from "./AdminContext";
 import { Order, Product } from "@/lib/types";
 import { formatPrice } from "@/lib/stripe";
 import { Package, ShoppingBag, TrendingUp, Clock } from "lucide-react";

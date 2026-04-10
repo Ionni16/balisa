@@ -1,19 +1,10 @@
 "use client";
-import { useState, useEffect, createContext, useContext } from "react";
+import { useState, useEffect } from "react";
+import { AdminContext } from "./AdminContext";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Package, ShoppingBag, LogOut, Eye } from "lucide-react";
 
-// Simple admin auth context using localStorage
-const AdminContext = createContext<{
-  adminKey: string;
-  setAdminKey: (k: string) => void;
-  logout: () => void;
-}>({ adminKey: "", setAdminKey: () => {}, logout: () => {} });
-
-export function useAdmin() {
-  return useContext(AdminContext);
-}
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },

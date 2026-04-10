@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
-import { useAdmin } from "../layout";
+import { useAdmin } from "../AdminContext";
 import { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/stripe";
 import { Plus, Pencil, Trash2, X, Upload, Star, StarOff, Loader2 } from "lucide-react";

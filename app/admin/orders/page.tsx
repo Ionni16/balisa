@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useAdmin } from "../layout";
+import { useAdmin } from "../AdminContext";
 import { Order } from "@/lib/types";
 import { formatPrice } from "@/lib/stripe";
 import { StatusBadge } from "../page";
