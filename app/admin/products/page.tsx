@@ -134,7 +134,7 @@ export default function AdminProducts() {
     if (!c) return;
     setEditing((prev) => ({
       ...prev,
-      colors: [...new Set([...(prev.colors || []), c])],
+      colors: Array.from(new Set([...(prev.colors || []), c])),
     }));
     setColorInput("");
   }
