@@ -49,11 +49,11 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="relative flex items-center">
             <Image
-              src="/logo_balisa.jpeg"
+              src="/logo_balisa_Senza.png"
               alt="Balisa"
-              width={100}
-              height={40}
-              className="h-8 lg:h-9 w-auto object-contain"
+              width={380}
+              height={160}
+              className="h-12 lg:h-16 w-auto object-contain"
               priority
             />
           </Link>

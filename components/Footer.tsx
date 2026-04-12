@@ -9,7 +9,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-5">
             <Image
-              src="/logo_balisa.jpeg"
+              src="/logo_balisa_Senza.png"
               alt="Balisa"
               width={120}
               height={48}
