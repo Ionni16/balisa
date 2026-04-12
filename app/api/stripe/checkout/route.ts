@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
           description: `Colore: ${item.color}`,
           images: item.product.images.slice(0, 1),
         },
-        unit_amount: Math.round(item.product.price * 100), // cents
+        unit_amount: Math.round(item.product.price * 100),
       },
       quantity: item.quantity,
     }));

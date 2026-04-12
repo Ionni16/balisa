@@ -2,9 +2,17 @@
 import { useState, useEffect } from "react";
 import { AdminContext } from "./AdminContext";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package, ShoppingBag, LogOut, Eye } from "lucide-react";
-
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingBag,
+  LogOut,
+  Eye,
+  Menu,
+  X,
+} from "lucide-react";
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -12,10 +20,15 @@ const NAV = [
   { href: "/admin/orders", label: "Ordini", icon: ShoppingBag },
 ];
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [adminKey, setAdminKeyState] = useState("");
   const [input, setInput] = useState("");
   const [error, setError] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -23,9 +36,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (stored) setAdminKeyState(stored);
   }, []);
 
+  // Close sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Quick check: try to fetch orders with this key
     const res = await fetch("/api/orders", {
       headers: { "x-admin-key": input },
     });
@@ -43,27 +60,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setAdminKeyState("");
   };
 
-  // Login screen
+  /* ── Login Screen ── */
   if (!adminKey) {
     return (
-      <div className="min-h-screen bg-noir flex items-center justify-center px-6">
+      <div className="min-h-[100svh] bg-noir flex items-center justify-center px-5">
         <div className="w-full max-w-sm">
-          <h1 className="font-serif text-4xl font-light text-cream mb-2 text-center">
-            Balisa
-          </h1>
-          <p className="font-sans text-xs tracking-widest uppercase text-cream/30 text-center mb-10">
-            Admin Panel
+          {/* Logo */}
+          <div className="flex justify-center mb-8">
+            <Image
+              src="/logo_balisa.jpeg"
+              alt="Balisa"
+              width={120}
+              height={48}
+              className="h-10 w-auto object-contain brightness-[10] invert"
+            />
+          </div>
+          <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-cream/25 text-center mb-10">
+            Pannello di Amministrazione
           </p>
+
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="font-sans text-xs tracking-wider uppercase text-cream/40 block mb-2">
-                Chiave Admin
-              </label>
+              <label className="admin-label">Chiave Admin</label>
               <input
                 type="password"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="w-full bg-white/10 border border-white/20 text-cream px-4 py-3 font-sans text-sm focus:outline-none focus:border-gold placeholder:text-white/20"
+                className="admin-input"
                 placeholder="••••••••"
                 autoFocus
               />
@@ -71,36 +94,98 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {error && (
               <p className="font-sans text-xs text-red-400">{error}</p>
             )}
-            <button type="submit" className="w-full bg-gold text-noir py-3 font-sans text-sm tracking-widest uppercase hover:bg-gold/90 transition-colors">
+            <button
+              type="submit"
+              className="w-full bg-gold text-noir py-3.5 font-sans text-sm tracking-[0.15em] uppercase hover:bg-gold/90 transition-colors"
+            >
               Accedi
             </button>
           </form>
+
+          <p className="font-sans text-[10px] text-cream/15 text-center mt-8">
+            © {new Date().getFullYear()} BALISA
+          </p>
         </div>
       </div>
     );
   }
 
+  /* ── Main Admin Layout ── */
   return (
-    <AdminContext.Provider value={{ adminKey, setAdminKey: setAdminKeyState, logout }}>
-      <div className="min-h-screen bg-[#111] flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-noir border-r border-white/10 flex flex-col fixed h-full">
-          <div className="p-6 border-b border-white/10">
-            <h1 className="font-serif text-2xl font-light text-cream tracking-widest">
-              BALISA
-            </h1>
-            <p className="font-sans text-xs text-cream/30 mt-0.5">Admin Panel</p>
+    <AdminContext.Provider
+      value={{ adminKey, setAdminKey: setAdminKeyState, logout }}
+    >
+      <div className="min-h-[100svh] bg-[#111] flex">
+        {/* ── Mobile top bar ── */}
+        <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-noir border-b border-white/10 flex items-center justify-between px-4 h-14">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 -ml-2 text-cream/60"
+          >
+            <Menu size={20} />
+          </button>
+          <Image
+            src="/logo_balisa.jpeg"
+            alt="Balisa"
+            width={80}
+            height={32}
+            className="h-6 w-auto object-contain brightness-[10] invert"
+          />
+          <a href="/" target="_blank" className="p-2 -mr-2 text-cream/40">
+            <Eye size={18} />
+          </a>
+        </div>
+
+        {/* ── Mobile sidebar overlay ── */}
+        {sidebarOpen && (
+          <div
+            className="lg:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* ── Sidebar ── */}
+        <aside
+          className={`
+            fixed z-50 h-full bg-noir border-r border-white/10 flex flex-col
+            transition-transform duration-300 ease-out
+            w-64
+            ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+            lg:translate-x-0 lg:z-auto
+          `}
+        >
+          {/* Sidebar header */}
+          <div className="p-5 border-b border-white/10 flex items-center justify-between">
+            <div>
+              <Image
+                src="/logo_balisa.jpeg"
+                alt="Balisa"
+                width={90}
+                height={36}
+                className="h-7 w-auto object-contain brightness-[10] invert"
+              />
+              <p className="font-sans text-[9px] text-cream/20 mt-1 tracking-wider">
+                Admin Panel
+              </p>
+            </div>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden p-1.5 text-cream/40 hover:text-cream"
+            >
+              <X size={18} />
+            </button>
           </div>
 
-          <nav className="flex-1 p-4 space-y-1">
+          {/* Nav items */}
+          <nav className="flex-1 p-3 space-y-0.5">
             {NAV.map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
                 className={`flex items-center gap-3 px-4 py-3 font-sans text-sm transition-all rounded-sm ${
                   pathname === href
-                    ? "bg-gold/20 text-gold"
-                    : "text-cream/50 hover:text-cream hover:bg-white/5"
+                    ? "bg-gold/15 text-gold"
+                    : "text-cream/45 hover:text-cream hover:bg-white/5"
                 }`}
               >
                 <Icon size={16} strokeWidth={1.5} />
@@ -109,18 +194,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             ))}
           </nav>
 
-          <div className="p-4 border-t border-white/10 space-y-1">
+          {/* Sidebar footer */}
+          <div className="p-3 border-t border-white/10 space-y-0.5">
             <a
               href="/"
               target="_blank"
-              className="flex items-center gap-3 px-4 py-3 font-sans text-sm text-cream/40 hover:text-cream transition-colors"
+              className="flex items-center gap-3 px-4 py-3 font-sans text-sm text-cream/35 hover:text-cream transition-colors"
             >
               <Eye size={16} strokeWidth={1.5} />
               Vedi sito
             </a>
             <button
               onClick={logout}
-              className="flex items-center gap-3 px-4 py-3 font-sans text-sm text-cream/40 hover:text-red-400 transition-colors w-full text-left"
+              className="flex items-center gap-3 px-4 py-3 font-sans text-sm text-cream/35 hover:text-red-400 transition-colors w-full text-left"
             >
               <LogOut size={16} strokeWidth={1.5} />
               Logout
@@ -128,11 +214,35 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </aside>
 
-        {/* Main content */}
-        <main className="ml-64 flex-1 p-8 text-cream min-h-screen">
-          {children}
+        {/* ── Mobile bottom nav ── */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-noir border-t border-white/10 flex items-center justify-around py-2 px-2 safe-bottom">
+          {NAV.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`flex flex-col items-center gap-1 py-1.5 px-4 rounded transition-colors ${
+                pathname === href ? "text-gold" : "text-cream/35"
+              }`}
+            >
+              <Icon size={18} strokeWidth={1.5} />
+              <span className="text-[9px] tracking-wider uppercase">
+                {label}
+              </span>
+            </Link>
+          ))}
+        </div>
+
+        {/* ── Main content ── */}
+        <main className="lg:ml-64 flex-1 min-h-[100svh] text-cream pt-14 pb-20 lg:pt-0 lg:pb-0">
+          <div className="p-5 lg:p-8">{children}</div>
         </main>
       </div>
+
+      <style jsx global>{`
+        .safe-bottom {
+          padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+        }
+      `}</style>
     </AdminContext.Provider>
   );
 }

@@ -3,7 +3,16 @@ import { useEffect, useState, useRef } from "react";
 import { useAdmin } from "../AdminContext";
 import { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/stripe";
-import { Plus, Pencil, Trash2, X, Upload, Star, StarOff, Loader2 } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  X,
+  Upload,
+  Star,
+  StarOff,
+  Loader2,
+} from "lucide-react";
 import Image from "next/image";
 import toast from "react-hot-toast";
 
@@ -31,16 +40,23 @@ export default function AdminProducts() {
   const [colorInput, setColorInput] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const headers = { "x-admin-key": adminKey, "Content-Type": "application/json" };
+  const headers = {
+    "x-admin-key": adminKey,
+    "Content-Type": "application/json",
+  };
 
   async function loadProducts() {
-    const r = await fetch("/api/products", { headers: { "x-admin-key": adminKey } });
+    const r = await fetch("/api/products", {
+      headers: { "x-admin-key": adminKey },
+    });
     const data = await r.json();
     setProducts(Array.isArray(data) ? data : []);
     setLoading(false);
   }
 
-  useEffect(() => { loadProducts(); }, [adminKey]);
+  useEffect(() => {
+    loadProducts();
+  }, [adminKey]);
 
   function openCreate() {
     setEditing(EMPTY);
@@ -68,7 +84,7 @@ export default function AdminProducts() {
         body: JSON.stringify(editing),
       });
       if (!res.ok) throw new Error((await res.json()).error);
-      toast.success(editing.id ? "Prodotto aggiornato ✨" : "Prodotto creato ✨");
+      toast.success(editing.id ? "Prodotto aggiornato" : "Prodotto creato");
       setModalOpen(false);
       loadProducts();
     } catch (err: any) {
@@ -156,35 +172,56 @@ export default function AdminProducts() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex items-center justify-between mb-8 lg:mb-10">
         <div>
-          <h1 className="font-serif text-4xl font-light">Prodotti</h1>
-          <p className="font-sans text-sm text-white/40 mt-1">{products.length} prodotti totali</p>
+          <h1 className="font-serif text-3xl lg:text-4xl font-light">
+            Prodotti
+          </h1>
+          <p className="font-sans text-xs text-white/35 mt-1">
+            {products.length} prodotti totali
+          </p>
         </div>
-        <button onClick={openCreate} className="bg-gold text-noir px-5 py-2.5 font-sans text-sm tracking-wider uppercase flex items-center gap-2 hover:bg-gold/90 transition-colors">
-          <Plus size={16} /> Nuovo prodotto
+        <button
+          onClick={openCreate}
+          className="bg-gold text-noir px-4 lg:px-5 py-2.5 font-sans text-xs tracking-wider uppercase flex items-center gap-2 hover:bg-gold/90 transition-colors"
+        >
+          <Plus size={14} />{" "}
+          <span className="hidden sm:inline">Nuovo prodotto</span>
+          <span className="sm:hidden">Nuovo</span>
         </button>
       </div>
 
       {/* Product grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-4">
         {products.map((p) => (
-          <div key={p.id} className="bg-white/5 border border-white/10 overflow-hidden group">
+          <div
+            key={p.id}
+            className="bg-white/[0.04] border border-white/[0.08] overflow-hidden group"
+          >
             {/* Image */}
-            <div className="relative aspect-[4/3] bg-white/5">
+            <div className="relative aspect-[4/3] bg-white/[0.04]">
               {p.images[0] ? (
-                <Image src={p.images[0]} alt={p.name} fill className="object-cover" />
+                <Image
+                  src={p.images[0]}
+                  alt={p.name}
+                  fill
+                  className="object-cover"
+                />
               ) : (
-                <div className="flex items-center justify-center h-full text-white/20 font-serif text-4xl">B</div>
+                <div className="flex items-center justify-center h-full text-white/10 font-serif text-4xl">
+                  B
+                </div>
               )}
               {p.featured && (
-                <div className="absolute top-2 left-2 bg-gold text-noir px-2 py-0.5 font-sans text-[10px] uppercase tracking-wider">
+                <div className="absolute top-2 left-2 bg-gold text-noir px-2 py-0.5 font-sans text-[9px] uppercase tracking-wider">
                   Bestseller
                 </div>
               )}
               {p.stock === 0 && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                  <span className="font-sans text-xs text-white/70 uppercase tracking-widest">Esaurito</span>
+                  <span className="font-sans text-[10px] text-white/60 uppercase tracking-[0.2em]">
+                    Esaurito
+                  </span>
                 </div>
               )}
             </div>
@@ -192,27 +229,41 @@ export default function AdminProducts() {
             {/* Info */}
             <div className="p-4">
               <div className="flex items-start justify-between mb-2">
-                <h3 className="font-serif text-lg font-light leading-tight">{p.name}</h3>
-                <span className="font-sans text-sm text-gold ml-2 flex-shrink-0">{formatPrice(p.price)}</span>
+                <h3 className="font-serif text-base lg:text-lg font-light leading-tight">
+                  {p.name}
+                </h3>
+                <span className="font-sans text-sm text-gold ml-2 flex-shrink-0">
+                  {formatPrice(p.price)}
+                </span>
               </div>
               <div className="flex items-center gap-3 mb-4">
-                <span className="font-sans text-xs text-white/30 uppercase tracking-wider">{p.category}</span>
-                <span className={`font-sans text-xs ${p.stock > 2 ? "text-green-400" : p.stock > 0 ? "text-yellow-400" : "text-red-400"}`}>
+                <span className="font-sans text-[10px] text-white/25 uppercase tracking-wider">
+                  {p.category}
+                </span>
+                <span
+                  className={`font-sans text-[10px] ${
+                    p.stock > 2
+                      ? "text-green-400"
+                      : p.stock > 0
+                      ? "text-yellow-400"
+                      : "text-red-400"
+                  }`}
+                >
                   Stock: {p.stock}
                 </span>
               </div>
               <div className="flex gap-2">
                 <button
                   onClick={() => openEdit(p)}
-                  className="flex-1 flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 py-2 font-sans text-xs uppercase tracking-wider transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 bg-white/[0.08] hover:bg-white/[0.15] py-2.5 font-sans text-[10px] uppercase tracking-wider transition-colors"
                 >
-                  <Pencil size={12} /> Modifica
+                  <Pencil size={11} /> Modifica
                 </button>
                 <button
                   onClick={() => handleDelete(p.id)}
-                  className="px-3 py-2 bg-red-900/30 hover:bg-red-900/50 text-red-400 transition-colors"
+                  className="px-3 py-2.5 bg-red-900/25 hover:bg-red-900/40 text-red-400 transition-colors"
                 >
-                  <Trash2 size={14} />
+                  <Trash2 size={13} />
                 </button>
               </div>
             </div>
@@ -220,46 +271,50 @@ export default function AdminProducts() {
         ))}
       </div>
 
-      {/* Modal */}
+      {/* ── Product Modal ── */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-end">
-          <div className="w-full max-w-lg bg-[#1a1a1a] border-l border-white/10 h-screen overflow-y-auto flex flex-col">
+          <div className="w-full lg:max-w-lg bg-[#1a1a1a] border-l border-white/10 h-full overflow-y-auto flex flex-col">
             {/* Modal header */}
-            <div className="flex items-center justify-between p-6 border-b border-white/10 sticky top-0 bg-[#1a1a1a] z-10">
-              <h2 className="font-serif text-xl font-light">
+            <div className="flex items-center justify-between p-5 lg:p-6 border-b border-white/10 sticky top-0 bg-[#1a1a1a] z-10">
+              <h2 className="font-serif text-lg lg:text-xl font-light">
                 {editing.id ? "Modifica prodotto" : "Nuovo prodotto"}
               </h2>
-              <button onClick={() => setModalOpen(false)} className="text-white/40 hover:text-white transition-colors">
+              <button
+                onClick={() => setModalOpen(false)}
+                className="text-white/35 hover:text-white transition-colors p-1"
+              >
                 <X size={20} />
               </button>
             </div>
 
             {/* Modal body */}
-            <div className="p-6 space-y-6 flex-1">
-              {/* Name */}
+            <div className="p-5 lg:p-6 space-y-5 flex-1">
               <div>
                 <label className="admin-label">Nome *</label>
                 <input
                   className="admin-input"
                   value={editing.name || ""}
-                  onChange={(e) => setEditing({ ...editing, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditing({ ...editing, name: e.target.value })
+                  }
                   placeholder="es. Blue Fringe Bag"
                 />
               </div>
 
-              {/* Description */}
               <div>
                 <label className="admin-label">Descrizione *</label>
                 <textarea
                   className="admin-input resize-none"
                   rows={3}
                   value={editing.description || ""}
-                  onChange={(e) => setEditing({ ...editing, description: e.target.value })}
+                  onChange={(e) =>
+                    setEditing({ ...editing, description: e.target.value })
+                  }
                   placeholder="Descrivi la borsa..."
                 />
               </div>
 
-              {/* Price + Stock */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="admin-label">Prezzo (€) *</label>
@@ -268,7 +323,12 @@ export default function AdminProducts() {
                     step="0.01"
                     className="admin-input"
                     value={editing.price || ""}
-                    onChange={(e) => setEditing({ ...editing, price: parseFloat(e.target.value) })}
+                    onChange={(e) =>
+                      setEditing({
+                        ...editing,
+                        price: parseFloat(e.target.value),
+                      })
+                    }
                     placeholder="89.00"
                   />
                 </div>
@@ -278,19 +338,25 @@ export default function AdminProducts() {
                     type="number"
                     className="admin-input"
                     value={editing.stock ?? ""}
-                    onChange={(e) => setEditing({ ...editing, stock: parseInt(e.target.value) })}
+                    onChange={(e) =>
+                      setEditing({
+                        ...editing,
+                        stock: parseInt(e.target.value),
+                      })
+                    }
                     placeholder="5"
                   />
                 </div>
               </div>
 
-              {/* Category */}
               <div>
                 <label className="admin-label">Categoria *</label>
                 <select
                   className="admin-input"
                   value={editing.category || "tote"}
-                  onChange={(e) => setEditing({ ...editing, category: e.target.value })}
+                  onChange={(e) =>
+                    setEditing({ ...editing, category: e.target.value })
+                  }
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c} value={c} className="bg-[#1a1a1a]">
@@ -300,20 +366,24 @@ export default function AdminProducts() {
                 </select>
               </div>
 
-              {/* Featured */}
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setEditing({ ...editing, featured: !editing.featured })}
-                  className={`flex items-center gap-2 px-4 py-2 font-sans text-xs uppercase tracking-wider border transition-colors ${
-                    editing.featured
-                      ? "border-gold text-gold bg-gold/10"
-                      : "border-white/20 text-white/40 hover:border-white/40"
-                  }`}
-                >
-                  {editing.featured ? <Star size={14} fill="currentColor" /> : <StarOff size={14} />}
-                  {editing.featured ? "Bestseller" : "Non in evidenza"}
-                </button>
-              </div>
+              {/* Featured toggle */}
+              <button
+                onClick={() =>
+                  setEditing({ ...editing, featured: !editing.featured })
+                }
+                className={`flex items-center gap-2 px-4 py-2.5 font-sans text-xs uppercase tracking-wider border transition-colors ${
+                  editing.featured
+                    ? "border-gold text-gold bg-gold/10"
+                    : "border-white/15 text-white/35 hover:border-white/30"
+                }`}
+              >
+                {editing.featured ? (
+                  <Star size={13} fill="currentColor" />
+                ) : (
+                  <StarOff size={13} />
+                )}
+                {editing.featured ? "Bestseller" : "Non in evidenza"}
+              </button>
 
               {/* Colors */}
               <div>
@@ -322,10 +392,13 @@ export default function AdminProducts() {
                   {(editing.colors || []).map((c) => (
                     <span
                       key={c}
-                      className="flex items-center gap-1.5 bg-white/10 px-3 py-1 font-sans text-xs"
+                      className="flex items-center gap-1.5 bg-white/[0.08] px-3 py-1.5 font-sans text-xs"
                     >
                       {c}
-                      <button onClick={() => removeColor(c)} className="text-white/30 hover:text-white">
+                      <button
+                        onClick={() => removeColor(c)}
+                        className="text-white/25 hover:text-white ml-0.5"
+                      >
                         <X size={10} />
                       </button>
                     </span>
@@ -336,10 +409,15 @@ export default function AdminProducts() {
                     className="admin-input flex-1"
                     value={colorInput}
                     onChange={(e) => setColorInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addColor())}
+                    onKeyDown={(e) =>
+                      e.key === "Enter" && (e.preventDefault(), addColor())
+                    }
                     placeholder="es. Rosa fucsia"
                   />
-                  <button onClick={addColor} className="bg-white/10 hover:bg-white/20 px-4 py-2 font-sans text-xs uppercase tracking-wider transition-colors">
+                  <button
+                    onClick={addColor}
+                    className="bg-white/[0.08] hover:bg-white/[0.15] px-4 py-2 font-sans text-[10px] uppercase tracking-wider transition-colors flex-shrink-0"
+                  >
                     + Aggiungi
                   </button>
                 </div>
@@ -350,11 +428,19 @@ export default function AdminProducts() {
                 <label className="admin-label">Immagini</label>
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   {(editing.images || []).map((img) => (
-                    <div key={img} className="relative aspect-square bg-white/10">
-                      <Image src={img} alt="" fill className="object-cover" />
+                    <div
+                      key={img}
+                      className="relative aspect-square bg-white/[0.08]"
+                    >
+                      <Image
+                        src={img}
+                        alt=""
+                        fill
+                        className="object-cover"
+                      />
                       <button
                         onClick={() => removeImage(img)}
-                        className="absolute top-1 right-1 bg-black/70 text-white p-0.5 hover:bg-red-600 transition-colors"
+                        className="absolute top-1 right-1 bg-black/70 text-white p-1 hover:bg-red-600 transition-colors"
                       >
                         <X size={10} />
                       </button>
@@ -371,22 +457,27 @@ export default function AdminProducts() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="w-full border border-dashed border-white/20 hover:border-white/40 py-4 font-sans text-xs text-white/40 hover:text-white transition-all flex items-center justify-center gap-2"
+                  className="w-full border border-dashed border-white/15 hover:border-white/30 py-4 font-sans text-[10px] text-white/35 hover:text-white transition-all flex items-center justify-center gap-2"
                 >
                   {uploading ? (
-                    <><Loader2 size={14} className="animate-spin" /> Caricamento...</>
+                    <>
+                      <Loader2 size={13} className="animate-spin" />{" "}
+                      Caricamento...
+                    </>
                   ) : (
-                    <><Upload size={14} /> Carica immagine</>
+                    <>
+                      <Upload size={13} /> Carica immagine
+                    </>
                   )}
                 </button>
               </div>
             </div>
 
             {/* Modal footer */}
-            <div className="p-6 border-t border-white/10 flex gap-3 sticky bottom-0 bg-[#1a1a1a]">
+            <div className="p-5 lg:p-6 border-t border-white/10 flex gap-3 sticky bottom-0 bg-[#1a1a1a]">
               <button
                 onClick={() => setModalOpen(false)}
-                className="flex-1 border border-white/20 py-3 font-sans text-sm uppercase tracking-wider hover:border-white/40 transition-colors"
+                className="flex-1 border border-white/15 py-3 font-sans text-sm uppercase tracking-wider hover:border-white/30 transition-colors"
               >
                 Annulla
               </button>
@@ -395,42 +486,19 @@ export default function AdminProducts() {
                 disabled={saving}
                 className="flex-1 bg-gold text-noir py-3 font-sans text-sm uppercase tracking-wider hover:bg-gold/90 transition-colors flex items-center justify-center gap-2"
               >
-                {saving ? <Loader2 size={14} className="animate-spin" /> : null}
-                {saving ? "Salvataggio..." : editing.id ? "Aggiorna" : "Crea prodotto"}
+                {saving ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : null}
+                {saving
+                  ? "Salvataggio..."
+                  : editing.id
+                  ? "Aggiorna"
+                  : "Crea prodotto"}
               </button>
             </div>
           </div>
         </div>
       )}
-
-      <style jsx global>{`
-        .admin-label {
-          display: block;
-          font-family: var(--font-dm-sans);
-          font-size: 0.7rem;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          color: rgba(255,255,255,0.4);
-          margin-bottom: 0.5rem;
-        }
-        .admin-input {
-          width: 100%;
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.15);
-          color: white;
-          padding: 0.625rem 0.875rem;
-          font-family: var(--font-dm-sans);
-          font-size: 0.875rem;
-          outline: none;
-          transition: border-color 0.2s;
-        }
-        .admin-input:focus {
-          border-color: #C9A96E;
-        }
-        .admin-input::placeholder {
-          color: rgba(255,255,255,0.2);
-        }
-      `}</style>
     </div>
   );
 }

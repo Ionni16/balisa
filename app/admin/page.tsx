@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useAdmin } from "./AdminContext";
 import { Order, Product } from "@/lib/types";
 import { formatPrice } from "@/lib/stripe";
+import { StatusBadge } from "./StatusBadge";
 import { Package, ShoppingBag, TrendingUp, Clock } from "lucide-react";
 import Link from "next/link";
 
@@ -15,8 +16,12 @@ export default function AdminDashboard() {
   useEffect(() => {
     if (!adminKey) return;
     Promise.all([
-      fetch("/api/orders", { headers: { "x-admin-key": adminKey } }).then((r) => r.json()),
-      fetch("/api/products", { headers: { "x-admin-key": adminKey } }).then((r) => r.json()),
+      fetch("/api/orders", { headers: { "x-admin-key": adminKey } }).then((r) =>
+        r.json()
+      ),
+      fetch("/api/products", { headers: { "x-admin-key": adminKey } }).then(
+        (r) => r.json()
+      ),
     ]).then(([ordersData, productsData]) => {
       setOrders(Array.isArray(ordersData) ? ordersData : []);
       setProducts(Array.isArray(productsData) ? productsData : []);
@@ -25,7 +30,12 @@ export default function AdminDashboard() {
   }, [adminKey]);
 
   const totalRevenue = orders
-    .filter((o) => o.status === "paid" || o.status === "shipped" || o.status === "delivered")
+    .filter(
+      (o) =>
+        o.status === "paid" ||
+        o.status === "shipped" ||
+        o.status === "delivered"
+    )
     .reduce((sum, o) => sum + o.total, 0);
 
   const pendingOrders = orders.filter((o) => o.status === "paid").length;
@@ -33,30 +43,10 @@ export default function AdminDashboard() {
   const outOfStock = products.filter((p) => p.stock === 0).length;
 
   const stats = [
-    {
-      label: "Fatturato totale",
-      value: formatPrice(totalRevenue),
-      icon: TrendingUp,
-      color: "text-gold",
-    },
-    {
-      label: "Ordini totali",
-      value: orders.length.toString(),
-      icon: ShoppingBag,
-      color: "text-blush",
-    },
-    {
-      label: "Da spedire",
-      value: pendingOrders.toString(),
-      icon: Clock,
-      color: "text-sage",
-    },
-    {
-      label: "Prodotti",
-      value: products.length.toString(),
-      icon: Package,
-      color: "text-gold-light",
-    },
+    { label: "Fatturato", value: formatPrice(totalRevenue), icon: TrendingUp, color: "text-gold" },
+    { label: "Ordini", value: orders.length.toString(), icon: ShoppingBag, color: "text-blush" },
+    { label: "Da spedire", value: pendingOrders.toString(), icon: Clock, color: "text-sage" },
+    { label: "Prodotti", value: products.length.toString(), icon: Package, color: "text-gold-light" },
   ];
 
   if (loading) {
@@ -69,43 +59,62 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <div className="mb-10">
-        <h1 className="font-serif text-4xl font-light">Dashboard</h1>
-        <p className="font-sans text-sm text-white/40 mt-1">
-          Benvenuta nel pannello di controllo BALISA
+      <div className="mb-8 lg:mb-10">
+        <h1 className="font-serif text-3xl lg:text-4xl font-light">Dashboard</h1>
+        <p className="font-sans text-xs text-white/35 mt-1">
+          Benvenuta nel pannello BALISA
         </p>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-8 lg:mb-10">
         {stats.map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-white/5 border border-white/10 p-6">
-            <Icon size={20} strokeWidth={1.5} className={`${color} mb-4`} />
-            <p className="font-serif text-3xl font-light">{value}</p>
-            <p className="font-sans text-xs text-white/40 mt-1 uppercase tracking-wider">{label}</p>
+          <div
+            key={label}
+            className="bg-white/[0.04] border border-white/[0.08] p-4 lg:p-6"
+          >
+            <Icon
+              size={18}
+              strokeWidth={1.5}
+              className={`${color} mb-3 lg:mb-4`}
+            />
+            <p className="font-serif text-2xl lg:text-3xl font-light">
+              {value}
+            </p>
+            <p className="font-sans text-[10px] text-white/35 mt-1 uppercase tracking-wider">
+              {label}
+            </p>
           </div>
         ))}
       </div>
 
       {/* Alerts */}
       {(lowStock > 0 || outOfStock > 0) && (
-        <div className="mb-8 space-y-2">
+        <div className="mb-6 lg:mb-8 space-y-2">
           {outOfStock > 0 && (
-            <div className="bg-red-900/30 border border-red-500/30 px-4 py-3 flex items-center justify-between">
-              <p className="font-sans text-sm text-red-300">
-                ⚠️ {outOfStock} {outOfStock === 1 ? "prodotto esaurito" : "prodotti esauriti"}
+            <div className="bg-red-900/20 border border-red-500/20 px-4 py-3 flex items-center justify-between rounded-sm">
+              <p className="font-sans text-xs text-red-300">
+                {outOfStock}{" "}
+                {outOfStock === 1 ? "prodotto esaurito" : "prodotti esauriti"}
               </p>
-              <Link href="/admin/products" className="font-sans text-xs text-red-300 underline">
+              <Link
+                href="/admin/products"
+                className="font-sans text-[10px] text-red-300 underline"
+              >
                 Gestisci
               </Link>
             </div>
           )}
           {lowStock > 0 && (
-            <div className="bg-yellow-900/30 border border-yellow-500/30 px-4 py-3 flex items-center justify-between">
-              <p className="font-sans text-sm text-yellow-300">
-                📦 {lowStock} {lowStock === 1 ? "prodotto" : "prodotti"} con stock basso (≤2)
+            <div className="bg-yellow-900/20 border border-yellow-500/20 px-4 py-3 flex items-center justify-between rounded-sm">
+              <p className="font-sans text-xs text-yellow-300">
+                {lowStock} {lowStock === 1 ? "prodotto" : "prodotti"} con
+                stock basso
               </p>
-              <Link href="/admin/products" className="font-sans text-xs text-yellow-300 underline">
+              <Link
+                href="/admin/products"
+                className="font-sans text-[10px] text-yellow-300 underline"
+              >
                 Gestisci
               </Link>
             </div>
@@ -117,16 +126,24 @@ export default function AdminDashboard() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-serif text-xl font-light">Ultimi ordini</h2>
-          <Link href="/admin/orders" className="font-sans text-xs text-white/40 hover:text-white transition-colors uppercase tracking-wider">
+          <Link
+            href="/admin/orders"
+            className="font-sans text-[10px] text-white/35 hover:text-white transition-colors uppercase tracking-wider"
+          >
             Vedi tutti →
           </Link>
         </div>
-        <div className="border border-white/10 overflow-hidden">
+
+        {/* Desktop table */}
+        <div className="hidden md:block border border-white/[0.08] overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-white/10 bg-white/5">
+              <tr className="border-b border-white/[0.08] bg-white/[0.03]">
                 {["Cliente", "Totale", "Stato", "Data"].map((h) => (
-                  <th key={h} className="px-4 py-3 text-left font-sans text-xs tracking-widest uppercase text-white/30">
+                  <th
+                    key={h}
+                    className="px-4 py-3 text-left font-sans text-[10px] tracking-[0.15em] uppercase text-white/25"
+                  >
                     {h}
                   </th>
                 ))}
@@ -134,10 +151,15 @@ export default function AdminDashboard() {
             </thead>
             <tbody>
               {orders.slice(0, 5).map((order) => (
-                <tr key={order.id} className="border-b border-white/5 hover:bg-white/3 transition-colors">
+                <tr
+                  key={order.id}
+                  className="border-b border-white/[0.04] hover:bg-white/[0.02] transition-colors"
+                >
                   <td className="px-4 py-3">
                     <p className="font-sans text-sm">{order.customer_name}</p>
-                    <p className="font-sans text-xs text-white/30">{order.customer_email}</p>
+                    <p className="font-sans text-[10px] text-white/25">
+                      {order.customer_email}
+                    </p>
                   </td>
                   <td className="px-4 py-3 font-sans text-sm text-gold">
                     {formatPrice(order.total)}
@@ -145,14 +167,17 @@ export default function AdminDashboard() {
                   <td className="px-4 py-3">
                     <StatusBadge status={order.status} />
                   </td>
-                  <td className="px-4 py-3 font-sans text-xs text-white/40">
+                  <td className="px-4 py-3 font-sans text-[11px] text-white/35">
                     {new Date(order.created_at).toLocaleDateString("it-IT")}
                   </td>
                 </tr>
               ))}
               {orders.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-10 text-center font-sans text-sm text-white/30">
+                  <td
+                    colSpan={4}
+                    className="px-4 py-10 text-center font-sans text-sm text-white/25"
+                  >
                     Nessun ordine ancora
                   </td>
                 </tr>
@@ -160,29 +185,40 @@ export default function AdminDashboard() {
             </tbody>
           </table>
         </div>
+
+        {/* Mobile cards */}
+        <div className="md:hidden space-y-3">
+          {orders.slice(0, 5).map((order) => (
+            <div
+              key={order.id}
+              className="bg-white/[0.04] border border-white/[0.08] p-4"
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div>
+                  <p className="font-sans text-sm">{order.customer_name}</p>
+                  <p className="font-sans text-[10px] text-white/25">
+                    {order.customer_email}
+                  </p>
+                </div>
+                <StatusBadge status={order.status} />
+              </div>
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.06]">
+                <span className="font-sans text-sm text-gold font-medium">
+                  {formatPrice(order.total)}
+                </span>
+                <span className="font-sans text-[10px] text-white/30">
+                  {new Date(order.created_at).toLocaleDateString("it-IT")}
+                </span>
+              </div>
+            </div>
+          ))}
+          {orders.length === 0 && (
+            <p className="text-center font-sans text-sm text-white/25 py-10">
+              Nessun ordine ancora
+            </p>
+          )}
+        </div>
       </div>
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status: Order["status"] }) {
-  const styles: Record<string, string> = {
-    pending: "bg-white/10 text-white/50",
-    paid: "bg-blue-900/50 text-blue-300",
-    shipped: "bg-yellow-900/50 text-yellow-300",
-    delivered: "bg-green-900/50 text-green-300",
-    cancelled: "bg-red-900/50 text-red-300",
-  };
-  const labels: Record<string, string> = {
-    pending: "In attesa",
-    paid: "Pagato",
-    shipped: "Spedito",
-    delivered: "Consegnato",
-    cancelled: "Annullato",
-  };
-  return (
-    <span className={`font-sans text-xs px-2.5 py-1 uppercase tracking-wider ${styles[status]}`}>
-      {labels[status]}
-    </span>
   );
 }

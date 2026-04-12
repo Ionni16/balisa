@@ -16,7 +16,10 @@ export async function POST(req: NextRequest) {
 
   const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
   if (!allowedTypes.includes(file.type)) {
-    return NextResponse.json({ error: "Formato non supportato. Usa JPG, PNG o WebP." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Formato non supportato. Usa JPG, PNG o WebP." },
+      { status: 400 }
+    );
   }
 
   const ext = file.name.split(".").pop();
@@ -36,9 +39,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const { data } = supabaseAdmin.storage
-    .from("products")
-    .getPublicUrl(filename);
+  const { data } = supabaseAdmin.storage.from("products").getPublicUrl(filename);
 
   return NextResponse.json({ url: data.publicUrl });
 }

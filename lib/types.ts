@@ -3,10 +3,10 @@ export interface Product {
   name: string;
   slug: string;
   description: string;
-  price: number; // in euros (e.g. 89.00)
-  images: string[]; // array of Supabase storage URLs
-  colors: string[]; // available colors
-  category: string; // "tote" | "mini" | "clutch" | "crossbody"
+  price: number;
+  images: string[];
+  colors: string[];
+  category: string;
   stock: number;
   featured: boolean;
   stripe_price_id?: string;

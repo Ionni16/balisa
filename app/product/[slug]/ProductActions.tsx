@@ -15,7 +15,7 @@ export default function ProductActions({ product }: { product: Product }) {
       return;
     }
     addItem(product, selectedColor);
-    toast.success(`${product.name} aggiunta al carrello ✨`);
+    toast.success(`${product.name} aggiunta al carrello`);
   };
 
   return (
@@ -23,18 +23,18 @@ export default function ProductActions({ product }: { product: Product }) {
       {/* Color selection */}
       {product.colors.length > 1 && (
         <div>
-          <p className="font-sans text-xs tracking-widest uppercase text-noir/40 mb-3">
-            Colore — {selectedColor}
+          <p className="font-sans text-[10px] tracking-[0.2em] uppercase text-noir/35 mb-3">
+            Colore — <span className="text-noir/70">{selectedColor}</span>
           </p>
           <div className="flex flex-wrap gap-2">
             {product.colors.map((color) => (
               <button
                 key={color}
                 onClick={() => setSelectedColor(color)}
-                className={`px-4 py-2 font-sans text-xs tracking-wider border transition-all ${
+                className={`px-4 py-2.5 font-sans text-xs tracking-wider border transition-all ${
                   selectedColor === color
                     ? "bg-noir text-cream border-noir"
-                    : "border-cream-dark text-noir/60 hover:border-noir"
+                    : "border-cream-dark text-noir/50 hover:border-noir"
                 }`}
               >
                 {color}
@@ -44,24 +44,24 @@ export default function ProductActions({ product }: { product: Product }) {
         </div>
       )}
 
-      {/* Add to cart button */}
+      {/* Add to cart */}
       <button
         onClick={handleAddToCart}
         disabled={product.stock === 0}
-        className="btn-primary w-full flex items-center justify-center gap-3 disabled:opacity-40 disabled:cursor-not-allowed"
+        className="btn-primary w-full flex items-center justify-center gap-3 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-noir disabled:hover:text-cream"
       >
         <ShoppingBag size={16} strokeWidth={1.5} />
         {product.stock === 0 ? "Esaurito" : "Aggiungi al carrello"}
       </button>
 
-      {/* WhatsApp / DM shortcut */}
+      {/* Custom order */}
       <a
         href="https://instagram.com/yourbalisa"
         target="_blank"
         rel="noopener noreferrer"
         className="btn-outline w-full flex items-center justify-center gap-2"
       >
-        Custom order — scrivici 📩
+        Custom order — scrivici
       </a>
     </div>
   );

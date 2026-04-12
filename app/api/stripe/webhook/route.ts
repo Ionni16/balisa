@@ -3,7 +3,6 @@ import { stripe } from "@/lib/stripe";
 import { supabaseAdmin } from "@/lib/supabase";
 import Stripe from "stripe";
 
-
 export async function POST(req: NextRequest) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature")!;
@@ -25,7 +24,6 @@ export async function POST(req: NextRequest) {
       const customerAddress = JSON.parse(session.metadata?.customer_address || "{}");
       const shippingAddress = session.shipping_details?.address;
 
-      // Use Stripe shipping address if provided
       const address = shippingAddress
         ? {
             line1: shippingAddress.line1 || customerAddress.line1,
@@ -35,7 +33,6 @@ export async function POST(req: NextRequest) {
           }
         : customerAddress;
 
-      // Save order to Supabase
       const { error } = await supabaseAdmin.from("orders").insert({
         stripe_session_id: session.id,
         customer_name: session.metadata?.customer_name || session.customer_details?.name || "",
@@ -49,7 +46,6 @@ export async function POST(req: NextRequest) {
       if (error) {
         console.error("Supabase insert error:", error);
       } else {
-        // Optionally: decrement stock for each item
         for (const item of items) {
           const { data: product } = await supabaseAdmin
             .from("products")
