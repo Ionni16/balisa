@@ -66,15 +66,14 @@ export default function AdminLayout({
       <div className="min-h-[100svh] bg-noir flex items-center justify-center px-5">
         <div className="w-full max-w-sm">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <Image
-              src="/logo_balisa.jpeg"
-              alt="Balisa"
-              width={120}
-              height={48}
-              className="h-10 w-auto object-contain brightness-[10] invert"
-            />
-          </div>
+          <Image
+            src="/logo_balisa_Senza.png"
+            alt="Balisa"
+            width={150}
+            height={44}
+            className="h-8 w-auto object-contain"
+            unoptimized
+          />
           <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-cream/25 text-center mb-10">
             Pannello di Amministrazione
           </p>
@@ -124,13 +123,16 @@ export default function AdminLayout({
           >
             <Menu size={20} />
           </button>
-          <Image
-            src="/logo_balisa.jpeg"
-            alt="Balisa"
-            width={80}
-            height={32}
-            className="h-6 w-auto object-contain brightness-[10] invert"
-          />
+          <Link href="/admin" className="inline-flex items-center">
+            <Image
+              src="/logo_balisa_Senza.png"
+              alt="Balisa"
+              width={150}
+              height={44}
+              className="h-8 w-auto object-contain"
+              unoptimized
+            />
+          </Link>
           <a href="/" target="_blank" className="p-2 -mr-2 text-cream/40">
             <Eye size={18} />
           </a>
@@ -158,11 +160,12 @@ export default function AdminLayout({
           <div className="p-5 border-b border-white/10 flex items-center justify-between">
             <div>
               <Image
-                src="/logo_balisa.jpeg"
+                src="/logo_balisa_Senza.png"
                 alt="Balisa"
-                width={90}
-                height={36}
-                className="h-7 w-auto object-contain brightness-[10] invert"
+                width={150}
+                height={44}
+                className="h-8 w-auto object-contain"
+                unoptimized
               />
               <p className="font-sans text-[9px] text-cream/20 mt-1 tracking-wider">
                 Admin Panel
