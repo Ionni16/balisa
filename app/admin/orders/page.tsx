@@ -82,7 +82,7 @@ export default function AdminOrders() {
   return (
     <div>
       <div className="mb-8 lg:mb-10">
-        <h1 className="font-serif text-3xl lg:text-4xl font-light">Ordini</h1>
+        <h1 className="font-serif text-3xl lg:text-4xl font-light">Orders</h1>
         <p className="font-sans text-xs text-white/35 mt-1">
           {orders.length} ordini totali
         </p>
@@ -123,7 +123,7 @@ export default function AdminOrders() {
         <table className="w-full">
           <thead>
             <tr className="bg-white/[0.03] border-b border-white/[0.08]">
-              {["Cliente", "Prodotti", "Totale", "Stato", "Data", ""].map(
+              {["Cliente", "Products", "Totale", "Stato", "Data", ""].map(
                 (h) => (
                   <th
                     key={h}

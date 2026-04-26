@@ -8,6 +8,7 @@ import {
   LayoutDashboard,
   Package,
   ShoppingBag,
+  Settings,
   LogOut,
   Eye,
   Menu,
@@ -16,8 +17,9 @@ import {
 
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/products", label: "Prodotti", icon: Package },
-  { href: "/admin/orders", label: "Ordini", icon: ShoppingBag },
+  { href: "/admin/products", label: "Products", icon: Package },
+  { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
+  { href: "/admin/settings", label: "Website", icon: Settings },
 ];
 
 export default function AdminLayout({
@@ -32,7 +34,7 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    const stored = localStorage.getItem("balisa_admin_key");
+    const stored = localStorage.getItem("okka_admin_key");
     if (stored) setAdminKeyState(stored);
   }, []);
 
@@ -47,16 +49,16 @@ export default function AdminLayout({
       headers: { "x-admin-key": input },
     });
     if (res.ok) {
-      localStorage.setItem("balisa_admin_key", input);
+      localStorage.setItem("okka_admin_key", input);
       setAdminKeyState(input);
       setError("");
     } else {
-      setError("Chiave admin non valida");
+      setError("Invalid admin key");
     }
   };
 
   const logout = () => {
-    localStorage.removeItem("balisa_admin_key");
+    localStorage.removeItem("okka_admin_key");
     setAdminKeyState("");
   };
 
@@ -68,19 +70,19 @@ export default function AdminLayout({
           {/* Logo */}
           <Image
             src="/logo_balisa_Senza.png"
-            alt="Balisa"
+            alt="OKKA"
             width={150}
             height={44}
             className="h-8 w-auto object-contain"
             unoptimized
           />
           <p className="font-sans text-[10px] tracking-[0.3em] uppercase text-cream/25 text-center mb-10">
-            Pannello di Amministrazione
+            Administration Panel
           </p>
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="admin-label">Chiave Admin</label>
+              <label className="admin-label">Admin Key</label>
               <input
                 type="password"
                 value={input}
@@ -97,12 +99,12 @@ export default function AdminLayout({
               type="submit"
               className="w-full bg-gold text-noir py-3.5 font-sans text-sm tracking-[0.15em] uppercase hover:bg-gold/90 transition-colors"
             >
-              Accedi
+              Log in
             </button>
           </form>
 
           <p className="font-sans text-[10px] text-cream/15 text-center mt-8">
-            © {new Date().getFullYear()} BALISA
+            © {new Date().getFullYear()} OKKA
           </p>
         </div>
       </div>
@@ -126,7 +128,7 @@ export default function AdminLayout({
           <Link href="/admin" className="inline-flex items-center">
             <Image
               src="/logo_balisa_Senza.png"
-              alt="Balisa"
+              alt="OKKA"
               width={150}
               height={44}
               className="h-8 w-auto object-contain"
@@ -161,7 +163,7 @@ export default function AdminLayout({
             <div>
               <Image
                 src="/logo_balisa_Senza.png"
-                alt="Balisa"
+                alt="OKKA"
                 width={150}
                 height={44}
                 className="h-8 w-auto object-contain"
@@ -205,7 +207,7 @@ export default function AdminLayout({
               className="flex items-center gap-3 px-4 py-3 font-sans text-sm text-cream/35 hover:text-cream transition-colors"
             >
               <Eye size={16} strokeWidth={1.5} />
-              Vedi sito
+              View site
             </a>
             <button
               onClick={logout}

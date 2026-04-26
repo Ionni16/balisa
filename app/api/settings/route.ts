@@ -1,0 +1,5 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabase';
+import { DEFAULT_SETTINGS } from '@/lib/settings';
+export async function GET(){const {data,error}=await supabaseAdmin.from('site_settings').select('*').limit(1).maybeSingle(); if(error)return NextResponse.json({error:error.message},{status:500}); return NextResponse.json({...DEFAULT_SETTINGS,...(data||{})});}
+export async function PATCH(req:NextRequest){if(req.headers.get('x-admin-key')!==process.env.ADMIN_SECRET_KEY)return NextResponse.json({error:'Unauthorized'},{status:401}); const body=await req.json(); const {data:existing}=await supabaseAdmin.from('site_settings').select('id').limit(1).maybeSingle(); const query=existing?.id?supabaseAdmin.from('site_settings').update(body).eq('id',existing.id):supabaseAdmin.from('site_settings').insert(body); const {data,error}=await query.select().single(); if(error)return NextResponse.json({error:error.message},{status:500}); return NextResponse.json(data);}

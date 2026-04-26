@@ -1,53 +1,12 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CartDrawer from "@/components/CartDrawer";
-import { Toaster } from "react-hot-toast";
-
+import type { Metadata } from 'next';
+import './globals.css';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import CartDrawer from '@/components/CartDrawer';
+import { Toaster } from 'react-hot-toast';
 export const metadata: Metadata = {
-  title: {
-    default: "BALISA — Borse Artigianali",
-    template: "%s | BALISA",
-  },
-  description:
-    "Borse artigianali uniche, fatte a mano con amore. From our hands to yours.",
-  openGraph: {
-    title: "BALISA — Borse Artigianali",
-    description: "Borse artigianali uniche, fatte a mano con amore.",
-    url: "https://yourbalisa.com",
-    siteName: "BALISA",
-    locale: "it_IT",
-    type: "website",
-  },
+  title: { default: 'OKKA Boutique — Premium Handmade Bags', template: '%s | OKKA Boutique' },
+  description: 'Premium handmade crochet bags with vivid colour, sculptural texture and international shipping.',
+  openGraph: { title: 'OKKA Boutique', description: 'Premium handmade crochet bags.', siteName: 'OKKA Boutique', locale: 'en_US', type: 'website' }
 };
-
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return (
-    <html lang="it">
-      <body>
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#1A1A1A",
-              color: "#FAF7F0",
-              fontFamily: "var(--font-dm-sans)",
-              fontSize: "12px",
-              letterSpacing: "0.05em",
-              borderRadius: "2px",
-            },
-          }}
-        />
-        <Navbar />
-        <CartDrawer />
-        <main>{children}</main>
-        <Footer />
-      </body>
-    </html>
-  );
-}
+export default function RootLayout({children}:{children:React.ReactNode}){return <html lang="en"><body><Toaster position="top-center" toastOptions={{style:{background:'#141414',color:'#FEFCF8',fontFamily:'var(--font-sans)',fontSize:'13px',borderRadius:'14px'}}}/><Navbar/><CartDrawer/>{children}<Footer/></body></html>}

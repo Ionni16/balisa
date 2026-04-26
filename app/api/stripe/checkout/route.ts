@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const { items, customer }: { items: CartItem[]; customer: any } = await req.json();
 
     if (!items || items.length === 0) {
-      return NextResponse.json({ error: "Carrello vuoto" }, { status: 400 });
+      return NextResponse.json({ error: "Cart is empty" }, { status: 400 });
     }
 
     const lineItems = items.map((item) => ({

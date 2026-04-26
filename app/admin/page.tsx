@@ -44,9 +44,9 @@ export default function AdminDashboard() {
 
   const stats = [
     { label: "Fatturato", value: formatPrice(totalRevenue), icon: TrendingUp, color: "text-gold" },
-    { label: "Ordini", value: orders.length.toString(), icon: ShoppingBag, color: "text-blush" },
+    { label: "Orders", value: orders.length.toString(), icon: ShoppingBag, color: "text-rose" },
     { label: "Da spedire", value: pendingOrders.toString(), icon: Clock, color: "text-sage" },
-    { label: "Prodotti", value: products.length.toString(), icon: Package, color: "text-gold-light" },
+    { label: "Products", value: products.length.toString(), icon: Package, color: "text-gold" },
   ];
 
   if (loading) {
@@ -62,7 +62,7 @@ export default function AdminDashboard() {
       <div className="mb-8 lg:mb-10">
         <h1 className="font-serif text-3xl lg:text-4xl font-light">Dashboard</h1>
         <p className="font-sans text-xs text-white/35 mt-1">
-          Benvenuta nel pannello BALISA
+          Welcome to the OKKA admin panel
         </p>
       </div>
 

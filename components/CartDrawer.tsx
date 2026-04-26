@@ -62,10 +62,10 @@ export default function CartDrawer() {
                     Il carrello è vuoto
                   </p>
                   <p className="font-sans text-xs text-noir/30">
-                    Aggiungi qualcosa di speciale
+                    Add something special
                   </p>
                   <button onClick={closeCart} className="btn-outline mt-2 text-xs px-6 py-2.5">
-                    Continua lo shopping
+                    Continue shopping
                   </button>
                 </div>
               ) : (
@@ -160,7 +160,7 @@ export default function CartDrawer() {
                   onClick={closeCart}
                   className="btn-primary w-full text-center flex items-center justify-center gap-2"
                 >
-                  Checkout <ArrowRight size={13} />
+                  Purchase <ArrowRight size={13} />
                 </Link>
               </div>
             )}
