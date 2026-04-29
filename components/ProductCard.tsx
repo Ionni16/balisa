@@ -18,7 +18,7 @@ function colourValue(c:string){
 export default function ProductCard({product,index=0}:{product:Product;index?:number}){
   const colors=(product.colors&&product.colors.length?product.colors:['blue','black','grey','brown','burgundy','red','beige']).slice(0,7);
 
-  return <Link href={`/product/${product.slug}`} className="group block fade-up" style={{animationDelay:`${index*45}ms`}}>
+  return <Link href={`/product/${product.id}`} className="group block fade-up" style={{animationDelay:`${index*45}ms`}}>
     <div className="relative aspect-square product-bg overflow-hidden">
       <SmartImage src={product.images?.[0]} alt={product.name} contain imgClassName="p-0 scale-[1.34] transition duration-500 group-hover:scale-[1.40]"/>
       {product.stock===0&&<div className="absolute inset-0 bg-white/75 grid place-items-center text-xs uppercase tracking-[.2em]">Sold out</div>}

@@ -174,42 +174,56 @@ export default async function HomePage() {
       </section>
 
       <section id="contact" className="site-shell info-section">
-        <div className="info-premium">
-          <div className="info-links-card">
-            <p className="info-eyebrow">More info</p>
-            <a href="#contact">Care Instructions</a>
-            <a href="#contact">Shipping policy</a>
-            <a href="#contact">Return Policy</a>
-            <a href={`mailto:${settings.contact_email}`}>Contact Us</a>
-          </div>
-
-          <div className="info-content-card">
+        <div className="info-premium-clean">
+          <div className="info-premium-header">
+            <span className="info-mini-pill">More info</span>
             <h2>{settings.about_title}</h2>
             <p>{settings.about_text}</p>
 
-            <div className="policy-grid">
-              <div className="policy-item">
-                <PackageCheck size={34} strokeWidth={1.45} aria-hidden="true" />
-                <div>
-                  <span>Shipping</span>
-                  <p>{settings.shipping_text}</p>
-                </div>
-              </div>
-              <div className="policy-item">
-                <RotateCcw size={34} strokeWidth={1.45} aria-hidden="true" />
-                <div>
-                  <span>Returns</span>
-                  <p>{settings.returns_text}</p>
-                </div>
-              </div>
-              <div className="policy-item">
-                <HeartHandshake size={34} strokeWidth={1.45} aria-hidden="true" />
-                <div>
-                  <span>Care</span>
-                  <p>{settings.care_text}</p>
-                </div>
-              </div>
+            <div className="info-quick-links">
+              <a href="#shipping-card">Shipping</a>
+              <a href="#returns-card">Returns</a>
+              <a href="#care-card">Care</a>
+              <a href={`mailto:${settings.contact_email}`}>Contact</a>
             </div>
+          </div>
+
+          <div className="info-cards-grid">
+            <article id="shipping-card" className="info-policy-card">
+              <div className="info-policy-icon">
+                <PackageCheck size={26} strokeWidth={1.55} aria-hidden="true" />
+              </div>
+              <div>
+                <span>Shipping</span>
+                <p>{settings.shipping_text}</p>
+              </div>
+            </article>
+
+            <article id="returns-card" className="info-policy-card">
+              <div className="info-policy-icon">
+                <RotateCcw size={26} strokeWidth={1.55} aria-hidden="true" />
+              </div>
+              <div>
+                <span>Returns</span>
+                <p>{settings.returns_text}</p>
+              </div>
+            </article>
+
+            <article id="care-card" className="info-policy-card">
+              <div className="info-policy-icon">
+                <HeartHandshake size={26} strokeWidth={1.55} aria-hidden="true" />
+              </div>
+              <div>
+                <span>Care</span>
+                <p>{settings.care_text}</p>
+              </div>
+            </article>
+
+            <article className="info-contact-card">
+              <span>Contact</span>
+              <p>Need help with an order, a custom request or product details? We usually reply quickly by email.</p>
+              <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
+            </article>
           </div>
         </div>
       </section>

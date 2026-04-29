@@ -116,7 +116,7 @@ export default function AdminLayout({
     <AdminContext.Provider
       value={{ adminKey, setAdminKey: setAdminKeyState, logout }}
     >
-      <div className="min-h-[100svh] bg-[#111] flex">
+      <div className="admin-layout min-h-[100svh] bg-white flex">
         {/* ── Mobile top bar ── */}
         <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-noir border-b border-white/10 flex items-center justify-between px-4 h-14">
           <button
@@ -238,7 +238,7 @@ export default function AdminLayout({
         </div>
 
         {/* ── Main content ── */}
-        <main className="lg:ml-64 flex-1 min-h-[100svh] text-cream pt-14 pb-20 lg:pt-0 lg:pb-0">
+        <main className="admin-shell lg:ml-64 flex-1 min-h-[100svh] text-[#151515] pt-14 pb-20 lg:pt-0 lg:pb-0">
           <div className="p-5 lg:p-8">{children}</div>
         </main>
       </div>
