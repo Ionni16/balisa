@@ -62,7 +62,7 @@ export default function AdminDashboard() {
       <div className="mb-8 lg:mb-10">
         <h1 className="font-serif text-3xl lg:text-4xl font-light">Dashboard</h1>
         <p className="font-sans text-xs text-white/35 mt-1">
-          Welcome to the OKKA admin panel
+          Welcome to the Balisa admin panel
         </p>
       </div>
 

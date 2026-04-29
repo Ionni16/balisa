@@ -34,7 +34,7 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   useEffect(() => {
-    const stored = localStorage.getItem("okka_admin_key");
+    const stored = localStorage.getItem("balisa_admin_key");
     if (stored) setAdminKeyState(stored);
   }, []);
 
@@ -49,7 +49,7 @@ export default function AdminLayout({
       headers: { "x-admin-key": input },
     });
     if (res.ok) {
-      localStorage.setItem("okka_admin_key", input);
+      localStorage.setItem("balisa_admin_key", input);
       setAdminKeyState(input);
       setError("");
     } else {
@@ -58,7 +58,7 @@ export default function AdminLayout({
   };
 
   const logout = () => {
-    localStorage.removeItem("okka_admin_key");
+    localStorage.removeItem("balisa_admin_key");
     setAdminKeyState("");
   };
 
@@ -70,7 +70,7 @@ export default function AdminLayout({
           {/* Logo */}
           <Image
             src="/logo_balisa_Senza.png"
-            alt="OKKA"
+            alt="Balisa"
             width={150}
             height={44}
             className="h-8 w-auto object-contain"
@@ -104,7 +104,7 @@ export default function AdminLayout({
           </form>
 
           <p className="font-sans text-[10px] text-cream/15 text-center mt-8">
-            © {new Date().getFullYear()} OKKA
+            © {new Date().getFullYear()} Balisa
           </p>
         </div>
       </div>
@@ -128,7 +128,7 @@ export default function AdminLayout({
           <Link href="/admin" className="inline-flex items-center">
             <Image
               src="/logo_balisa_Senza.png"
-              alt="OKKA"
+              alt="Balisa"
               width={150}
               height={44}
               className="h-8 w-auto object-contain"
@@ -163,7 +163,7 @@ export default function AdminLayout({
             <div>
               <Image
                 src="/logo_balisa_Senza.png"
-                alt="OKKA"
+                alt="Balisa"
                 width={150}
                 height={44}
                 className="h-8 w-auto object-contain"

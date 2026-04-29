@@ -1,14 +1,31 @@
-import { Product } from '@/lib/types';
+import {Product} from '@/lib/types';
 import Link from 'next/link';
 import Image from 'next/image';
-import { formatPrice } from '@/lib/stripe';
+import {formatPrice} from '@/lib/stripe';
+
+const colorMap:Record<string,string>={
+  navy:'#073763',blue:'#073763',black:'#000',grey:'#5d5d5d',gray:'#5d5d5d',
+  brown:'#6b4b38',burgundy:'#8b2638',red:'#d51f28',beige:'#efe8de',
+  cream:'#efe8de',white:'#f7f3ed',pink:'#f3b8c1',orange:'#ef5b18',yellow:'#f2d13b',
+  green:'#1f6b3a'
+};
+
+function colourValue(c:string){
+  const k=c.toLowerCase().trim();
+  return colorMap[k] || k;
+}
+
 export default function ProductCard({product,index=0}:{product:Product;index?:number}){
-  return <Link href={`/product/${product.slug}`} className="group block fade-up" style={{animationDelay:`${index*70}ms`}}>
-    <div className="relative aspect-[4/5] bg-stone overflow-hidden rounded-[28px] border border-black/5 shadow-soft">
-      {product.images?.[0]?<Image src={product.images[0]} alt={product.name} fill className="object-cover transition duration-700 group-hover:scale-105"/>:<div className="h-full grid place-items-center logo-word text-5xl text-black/12">OKKA</div>}
-      {product.featured&&<span className="absolute left-4 top-4 bg-white/90 px-3 py-1 rounded-full text-[10px] uppercase tracking-[.16em]">Bestseller</span>}
-      {product.stock===0&&<div className="absolute inset-0 bg-white/70 grid place-items-center text-xs uppercase tracking-[.2em]">Sold out</div>}
+  const colors=(product.colors&&product.colors.length?product.colors:['blue','black','grey','brown','burgundy','red','beige']).slice(0,7);
+  return <Link href={`/product/${product.slug}`} className="group block fade-up" style={{animationDelay:`${index*45}ms`}}>
+    <div className="relative aspect-square product-bg overflow-hidden">
+      {product.images?.[0]?<Image src={product.images[0]} alt={product.name} fill className="object-contain p-2 scale-[1.12] transition duration-500 group-hover:scale-[1.18]"/>:<div className="h-full grid place-items-center logo-word text-5xl text-black/10">Balisa</div>}
+      {product.stock===0&&<div className="absolute inset-0 bg-white/75 grid place-items-center text-xs uppercase tracking-[.2em]">Sold out</div>}
     </div>
-    <div className="pt-4 flex justify-between gap-4"><div><h3 className="font-serif text-xl leading-tight">{product.name}</h3><p className="text-xs uppercase tracking-[.16em] text-ink/40 mt-1">{product.category}</p></div><p className="text-sm font-semibold">{formatPrice(product.price)}</p></div>
+    <div className="pt-3 flex gap-2">{colors.map((c,i)=><span key={`${c}-${i}`} className="color-dot" style={{background:colourValue(c)}} />)}</div>
+    <div className="pt-6">
+      <h3 className="text-[15px] leading-tight font-normal tracking-[.02em]">{product.name}</h3>
+      <p className="mt-2 price-text">{formatPrice(product.price)} EUR</p>
+    </div>
   </Link>
 }

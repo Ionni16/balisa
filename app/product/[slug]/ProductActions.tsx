@@ -1,7 +1,41 @@
 "use client";
-import { useState } from 'react';
-import { ShoppingBag } from 'lucide-react';
-import { useCartStore } from '@/lib/store';
-import { Product } from '@/lib/types';
+import {useState} from 'react';
+import {Product} from '@/lib/types';
+import {useCartStore} from '@/lib/store';
 import toast from 'react-hot-toast';
-export default function ProductActions({product}:{product:Product}){const [color,setColor]=useState(product.colors?.[0]||'As shown'); const {addItem}=useCartStore(); const add=()=>{if(!color){toast.error('Select a colour');return} addItem(product,color); toast.success(`${product.name} added to cart`)}; return <div className="grid gap-4">{product.colors?.length>1&&<div><p className="text-xs uppercase tracking-[.18em] text-ink/40 mb-3">Colour — <span className="text-ink">{color}</span></p><div className="flex flex-wrap gap-2">{product.colors.map(c=><button key={c} onClick={()=>setColor(c)} className={`px-5 py-3 rounded-full border text-xs uppercase tracking-[.14em] ${color===c?'bg-ink text-white border-ink':'border-black/12'}`}>{c}</button>)}</div></div>}<button onClick={add} disabled={product.stock===0} className="btn-dark w-full disabled:opacity-35 disabled:pointer-events-none"><ShoppingBag size={16}/>{product.stock===0?'Sold out':'Add to cart'}</button><a href="https://instagram.com/okka.boutique" target="_blank" className="btn-light w-full">Ask for custom order</a></div>}
+import {Minus,Plus} from 'lucide-react';
+
+export default function ProductActions({product}:{product:Product}){
+  const [quantity,setQuantity]=useState(1);
+  const [color,setColor]=useState(product.colors?.[0]||'As shown');
+  const addItem=useCartStore(s=>s.addItem);
+  const soldOut=product.stock===0;
+
+  function add(){
+    if(soldOut)return;
+    addItem(product,quantity,color);
+    toast.success('Added to cart');
+  }
+
+  return <div className="mt-8">
+    {product.colors?.length>0&&<label className="block mb-5">
+      <span className="block text-[13px] text-black/60 mb-2">Color</span>
+      <select value={color} onChange={e=>setColor(e.target.value)} className="input-field max-w-[260px]">
+        {product.colors.map(c=><option key={c} value={c}>{c}</option>)}
+      </select>
+    </label>}
+
+    <div className="mb-7">
+      <span className="block text-[13px] text-black/60 mb-2">Quantity</span>
+      <div className="qty-box">
+        <button onClick={()=>setQuantity(q=>Math.max(1,q-1))} aria-label="Decrease"><Minus size={14}/></button>
+        <span>{quantity}</span>
+        <button onClick={()=>setQuantity(q=>q+1)} aria-label="Increase"><Plus size={14}/></button>
+      </div>
+    </div>
+
+    <button onClick={add} disabled={soldOut} className="btn-keylon w-full max-w-[430px] disabled:opacity-50 disabled:cursor-not-allowed">
+      {soldOut?'Sold out':'Add to cart'}
+    </button>
+  </div>
+}

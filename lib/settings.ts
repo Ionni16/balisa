@@ -1,20 +1,50 @@
 import { supabase } from './supabase';
 import { SiteSettings } from './types';
-export const DEFAULT_SETTINGS: SiteSettings = {
-  hero_eyebrow: 'Handmade statement bags from Italy',
-  hero_title: 'Colourful pieces for elevated summer dressing.',
-  hero_subtitle: 'OKKA creates limited-run crochet bags with sculptural texture, vivid colour and a made-by-hand finish.',
-  hero_image: '',
-  announcement: 'Worldwide shipping — handmade in limited quantities',
-  instagram_url: 'https://instagram.com/okka.boutique',
-  instagram_handle: '@okka.boutique',
-  contact_email: 'hello@okkaboutique.com',
-  about_title: 'Creativity, texture and fearless colour.',
-  about_text: 'Each OKKA bag is made in small batches with a focus on expressive colour, tactile yarns and distinctive silhouettes. No two pieces are exactly the same.',
-  shipping_text: 'Worldwide shipping available. Orders are prepared within 2–5 business days unless marked as made-to-order.',
-  returns_text: 'Returns are accepted within 14 days for unused items in original condition. Custom pieces are final sale.'
+
+export const DEFAULT_SETTINGS:SiteSettings={
+  brand_name:'Balisa',
+  logo_url:'/logo_balisa_Senza.png',
+  favicon_url:'',
+  announcement:'Ready-Made bags | Only 1 available for each',
+  announcement_url:'/shop',
+  hero_eyebrow:'',
+  hero_title:'THE summer bags',
+  hero_subtitle:'',
+  hero_image:'',
+  hero_image_mobile:'',
+  hero_button_label:'Shop now',
+  hero_button_url:'/shop',
+  secondary_button_label:'Custom orders',
+  secondary_button_url:'/#contact',
+  best_sellers_title:'Best sellers',
+  best_sellers_subtitle:'',
+  purpose_eyebrow:'',
+  purpose_title:'Made with purpose',
+  purpose_text:'Discover the beauty of sustainable fashion with our handmade crochet bags. Each bag is made to order, reducing waste and embracing slow fashion. Designed for everyday style.',
+  purpose_image_left:'',
+  purpose_image_right:'',
+  purpose_button_label:'Contact us',
+  purpose_button_url:'mailto:hello@balisa.it',
+  about_title:'Handmade crochet bags designed for everyday style.',
+  about_text:'Balisa creates small-batch crochet bags with soft shapes, expressive colours and a clean handmade finish. Each piece is crafted to feel personal, tactile and made to last.',
+  shipping_text:'Shipping is calculated at check-out. Ready-made pieces are prepared within 2–5 business days. Made-to-order timelines are confirmed before production.',
+  returns_text:'Returns are accepted within 14 days for unused ready-made items in original condition. Custom pieces are final sale.',
+  care_text:'Hand wash in cold water with mild soap and lay flat to dry.',
+  contact_email:'hello@balisa.it',
+  instagram_url:'https://instagram.com/balisa',
+  instagram_handle:'@balisa',
+  tiktok_url:'',
+  pinterest_url:'',
+  newsletter_title:'Join the Balisa list',
+  newsletter_text:'Be first to know about limited drops, custom openings and new colour stories.'
 };
-export async function getSiteSettings(): Promise<SiteSettings> {
-  const { data } = await supabase.from('site_settings').select('*').limit(1).maybeSingle();
-  return { ...DEFAULT_SETTINGS, ...(data || {}) } as SiteSettings;
+
+export async function getSiteSettings():Promise<SiteSettings>{
+  if(!supabase) return DEFAULT_SETTINGS;
+  try {
+    const {data}=await supabase.from('site_settings').select('*').order('updated_at',{ascending:false}).limit(1).maybeSingle();
+    return {...DEFAULT_SETTINGS,...(data||{})} as SiteSettings;
+  } catch {
+    return DEFAULT_SETTINGS;
+  }
 }

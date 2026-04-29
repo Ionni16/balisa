@@ -3,23 +3,92 @@ import { Product } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, Globe2, Scissors } from 'lucide-react';
 import { getSiteSettings } from '@/lib/settings';
 
-export const dynamic = 'force-dynamic';
-async function getFeatured(): Promise<Product[]> { const { data } = await supabase.from('products').select('*').eq('featured',true).order('created_at',{ascending:false}).limit(4); return (data as Product[])||[]; }
-async function getLatest(): Promise<Product[]> { const { data } = await supabase.from('products').select('*').order('created_at',{ascending:false}).limit(3); return (data as Product[])||[]; }
+export const dynamic='force-dynamic';
+export const revalidate=0;
+
+async function getFeatured():Promise<Product[]>{
+  if(!supabase)return[];
+  const{data}=await supabase.from('products').select('*').eq('featured',true).order('created_at',{ascending:false}).limit(8);
+  return(data as Product[])||[];
+}
+async function getLatest():Promise<Product[]>{
+  if(!supabase)return[];
+  const{data}=await supabase.from('products').select('*').order('created_at',{ascending:false}).limit(8);
+  return(data as Product[])||[];
+}
+function SmartImage({src,alt,priority=false,contain=false}:{src?:string;alt:string;priority?:boolean;contain?:boolean}){
+  return src?<Image src={src} alt={alt} fill priority={priority} className={contain?"object-contain":"object-cover"}/>:<div className="h-full w-full bg-[#eeeeee]"/>;
+}
+
 export default async function HomePage(){
-  const [settings, featured, latest] = await Promise.all([getSiteSettings(), getFeatured(), getLatest()]);
-  const hero = settings.hero_image || featured[0]?.images?.[0] || latest[0]?.images?.[0];
-  return <main className="pt-28">
-    <section className="max-w-7xl mx-auto px-5 lg:px-10 py-10 lg:py-20 grid lg:grid-cols-[1.05fr_.95fr] gap-10 items-center">
-      <div className="fade-up"><p className="kicker mb-5">{settings.hero_eyebrow}</p><h1 className="font-serif text-[clamp(3.3rem,8vw,7.7rem)] leading-[.9] tracking-[-.04em] max-w-4xl">{settings.hero_title}</h1><p className="mt-7 text-lg lg:text-xl text-ink/60 leading-8 max-w-xl">{settings.hero_subtitle}</p><div className="mt-9 flex flex-wrap gap-3"><Link href="/shop" className="btn-dark">Shop collection <ArrowRight size={16}/></Link><a href={settings.instagram_url} target="_blank" className="btn-light">Instagram</a></div></div>
-      <div className="relative"><div className="absolute -inset-5 bg-rose/40 rounded-[48px] rotate-3"/><div className="relative aspect-[4/5] rounded-[42px] bg-stone overflow-hidden shadow-soft">{hero?<Image src={hero} alt="OKKA handmade bag" fill priority className="object-cover"/>:<div className="h-full grid place-items-center logo-word text-7xl text-black/10">OKKA</div>}</div></div>
+  const[settings,featured,latest]=await Promise.all([getSiteSettings(),getFeatured(),getLatest()]);
+  const products=featured.length?featured:latest;
+  const hero=settings.hero_image||products[0]?.images?.[0]||latest[0]?.images?.[0];
+  const left=settings.purpose_image_left||products[0]?.images?.[0]||hero;
+  const right=settings.purpose_image_right||products[1]?.images?.[0]||hero;
+
+  return <main className="pt-[124px]">
+    <section className="relative h-[calc(100svh-124px)] min-h-[560px] overflow-hidden bg-[#eee]">
+      <div className="absolute inset-0">
+        <SmartImage src={hero} alt={`${settings.brand_name} hero`} priority/>
+        <div className="absolute inset-0 bg-black/20"/>
+      </div>
+      <div className="relative z-10 h-full flex items-center justify-center text-center px-5">
+        <h1 className="hero-title text-white">{settings.hero_title}</h1>
+      </div>
     </section>
-    <section className="border-y border-black/10 bg-white"><div className="max-w-7xl mx-auto px-5 lg:px-10 py-6 grid md:grid-cols-3 gap-5"><div className="flex gap-3"><Scissors className="text-gold"/><p className="text-sm uppercase tracking-[.14em]">Handmade finish</p></div><div className="flex gap-3"><Sparkles className="text-gold"/><p className="text-sm uppercase tracking-[.14em]">Limited pieces</p></div><div className="flex gap-3"><Globe2 className="text-gold"/><p className="text-sm uppercase tracking-[.14em]">International shipping</p></div></div></section>
-    <section className="max-w-7xl mx-auto px-5 lg:px-10 py-20"><div className="flex justify-between items-end mb-10"><div><p className="kicker mb-3">Your favourites</p><h2 className="font-serif text-5xl tracking-[-.03em]">Signature pieces</h2></div><Link href="/shop" className="hidden md:flex items-center gap-2 text-xs uppercase tracking-[.18em]">View all <ArrowRight size={14}/></Link></div><div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7">{(featured.length?featured:latest).map((p,i)=><ProductCard key={p.id} product={p} index={i}/>)}</div></section>
-    <section id="about" className="bg-stone py-20"><div className="max-w-7xl mx-auto px-5 lg:px-10 grid lg:grid-cols-2 gap-12 items-center"><div><p className="kicker mb-4">About OKKA</p><h2 className="font-serif text-5xl lg:text-7xl leading-[.95] tracking-[-.04em]">{settings.about_title}</h2></div><div><p className="text-xl text-ink/65 leading-9">{settings.about_text}</p><div className="mt-10 grid grid-cols-3 gap-4"><div><b className="font-serif text-4xl">01</b><p className="text-xs uppercase tracking-[.16em] text-ink/45 mt-2">Small batch</p></div><div><b className="font-serif text-4xl">100%</b><p className="text-xs uppercase tracking-[.16em] text-ink/45 mt-2">Handmade</p></div><div><b className="font-serif text-4xl">∞</b><p className="text-xs uppercase tracking-[.16em] text-ink/45 mt-2">Custom spirit</p></div></div></div></div></section>
-    <section id="faq" className="max-w-5xl mx-auto px-5 lg:px-10 py-20"><p className="kicker mb-4 text-center">Customer care</p><h2 className="font-serif text-5xl text-center mb-10">More information</h2><div className="grid md:grid-cols-2 gap-4"><details className="bg-white rounded-3xl border border-black/10 p-6"><summary className="cursor-pointer font-semibold">Shipping</summary><p className="mt-4 text-ink/60 leading-7">{settings.shipping_text}</p></details><details className="bg-white rounded-3xl border border-black/10 p-6"><summary className="cursor-pointer font-semibold">Return policy</summary><p className="mt-4 text-ink/60 leading-7">{settings.returns_text}</p></details><details className="bg-white rounded-3xl border border-black/10 p-6"><summary className="cursor-pointer font-semibold">Bag care</summary><p className="mt-4 text-ink/60 leading-7">Spot clean gently with cold water. Store flat or stuffed to preserve shape.</p></details><details className="bg-white rounded-3xl border border-black/10 p-6"><summary className="cursor-pointer font-semibold">Contact</summary><p className="mt-4 text-ink/60 leading-7">Email: {settings.contact_email}<br/>Instagram: {settings.instagram_handle}</p></details></div></section>
+
+    <section className="site-shell py-10 lg:py-14">
+      <h2 className="text-[20px] font-normal tracking-[.01em] mb-8">{settings.best_sellers_title}</h2>
+      {products.length?<div className="grid grid-cols-2 lg:grid-cols-4 gap-x-2 gap-y-11">{products.slice(0,8).map((p,i)=><ProductCard key={p.id} product={p} index={i}/>)}</div>:<div className="product-bg py-20 text-center"><h3 className="text-3xl font-light">No products yet</h3><p className="mt-3 text-black/55">Add your first products from the admin area.</p></div>}
+    </section>
+
+    <section id="about" className="bg-white">
+      <div className="site-shell py-16 lg:py-20 text-center">
+        <h2 className="purpose-title">{settings.purpose_title}</h2>
+        <p className="mx-auto mt-7 max-w-4xl text-[20px] text-black/68 leading-[1.75]">{settings.purpose_text}</p>
+      </div>
+
+      <div className="relative grid md:grid-cols-2">
+        <div className="relative aspect-[4/5] md:aspect-[5/4] overflow-hidden bg-[#eee]"><SmartImage src={left} alt="Balisa lifestyle 1"/></div>
+        <div className="relative aspect-[4/5] md:aspect-[5/4] overflow-hidden bg-[#eee]"><SmartImage src={right} alt="Balisa lifestyle 2"/></div>
+
+        <Link
+          href={settings.purpose_button_url||`mailto:${settings.contact_email}`}
+          className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 bg-white px-12 py-5 text-[16px] font-semibold tracking-[.01em] text-black shadow-[0_20px_45px_rgba(0,0,0,.10)] hover:bg-black hover:text-white transition-colors"
+        >
+          {settings.purpose_button_label}
+        </Link>
+      </div>
+    </section>
+
+    <section id="contact" className="bg-white">
+      <div className="site-shell py-20 lg:py-24">
+        <div className="mb-12 text-center">
+          <p className="text-[12px] tracking-[.22em] uppercase text-black/40 mb-4">Customer care</p>
+          <h2 className="text-[42px] lg:text-[58px] leading-none tracking-[-.05em] font-normal">Everything you need</h2>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-5">
+          <div className="care-card">
+            <span className="care-number">01</span>
+            <h3>Shipping</h3>
+            <p>{settings.shipping_text}</p>
+          </div>
+          <div className="care-card">
+            <span className="care-number">02</span>
+            <h3>Care instructions</h3>
+            <p>{settings.care_text}</p>
+          </div>
+          <div className="care-card">
+            <span className="care-number">03</span>
+            <h3>Contact</h3>
+            <p><a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a><br/><a href={settings.instagram_url} target="_blank" rel="noreferrer">{settings.instagram_handle}</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 }

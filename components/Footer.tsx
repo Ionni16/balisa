@@ -1,14 +1,57 @@
 import Link from 'next/link';
 import { getSiteSettings } from '@/lib/settings';
+import Image from 'next/image';
+
 export default async function Footer(){
-  const s = await getSiteSettings();
-  return <footer className="bg-ink text-white mt-24">
-    <div className="max-w-7xl mx-auto px-5 lg:px-10 py-16 grid md:grid-cols-[1.4fr_.8fr_.8fr_.8fr] gap-10">
-      <div><div className="logo-word text-5xl mb-5">OKKA</div><p className="text-white/55 max-w-sm leading-7">Premium handmade crochet bags designed for expressive, international summer dressing.</p></div>
-      <div><h3 className="text-xs uppercase tracking-[.2em] mb-4 text-white/45">Shop</h3><div className="grid gap-3 text-sm text-white/70"><Link href="/shop">All products</Link><Link href="/shop?category=clutch">Clutches</Link><Link href="/shop?category=beach">Beach bags</Link></div></div>
-      <div><h3 className="text-xs uppercase tracking-[.2em] mb-4 text-white/45">Support</h3><div className="grid gap-3 text-sm text-white/70"><a href={`mailto:${s.contact_email}`}>{s.contact_email}</a><Link href="/#faq">Shipping & returns</Link><Link href="/#about">About OKKA</Link></div></div>
-      <div><h3 className="text-xs uppercase tracking-[.2em] mb-4 text-white/45">Social</h3><a className="text-sm text-white/70" href={s.instagram_url} target="_blank">{s.instagram_handle}</a></div>
+  const settings=await getSiteSettings();
+
+  return <footer className="bg-[#111] text-white">
+    <div className="site-shell py-16 lg:py-20">
+      <div className="grid gap-12 lg:grid-cols-[1.15fr_.85fr_.85fr_.85fr]">
+        <div>
+          <Link href="/" className="inline-flex items-center mb-8">
+            {settings.logo_url
+              ? <Image src={settings.logo_url} alt={settings.brand_name} width={150} height={52} className="h-12 w-auto object-contain invert brightness-0" unoptimized/>
+              : <span className="logo-word text-5xl">{settings.brand_name}</span>}
+          </Link>
+          <p className="max-w-[420px] text-[16px] leading-8 text-white/62">{settings.about_text}</p>
+        </div>
+
+        <div>
+          <h3 className="footer-title">Shop</h3>
+          <div className="footer-links">
+            <Link href="/shop">All products</Link>
+            <Link href="/shop?category=mini">Mini bags</Link>
+            <Link href="/shop?category=beach">Beach bags</Link>
+            <Link href="/shop?category=custom">Custom</Link>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="footer-title">Support</h3>
+          <div className="footer-links">
+            <a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a>
+            <Link href="/#contact">Shipping & returns</Link>
+            <Link href="/#about">About Balisa</Link>
+          </div>
+        </div>
+
+        <div>
+          <h3 className="footer-title">Social</h3>
+          <div className="footer-links">
+            <a href={settings.instagram_url} target="_blank" rel="noreferrer">{settings.instagram_handle}</a>
+            {settings.tiktok_url&&<a href={settings.tiktok_url} target="_blank" rel="noreferrer">TikTok</a>}
+            {settings.pinterest_url&&<a href={settings.pinterest_url} target="_blank" rel="noreferrer">Pinterest</a>}
+          </div>
+        </div>
+      </div>
     </div>
-    <div className="border-t border-white/10 px-5 lg:px-10 py-5 text-center text-[11px] uppercase tracking-[.18em] text-white/35">© {new Date().getFullYear()} OKKA Boutique</div>
+
+    <div className="border-t border-white/10">
+      <div className="site-shell h-16 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] uppercase tracking-[.22em] text-white/36">
+        <span>© 2026 Balisa</span>
+        <span>Handmade crochet bags</span>
+      </div>
+    </div>
   </footer>
 }
