@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { getSiteSettings } from '@/lib/settings';
 import SmartImage from '@/components/SmartImage';
 import NewsletterForm from '@/components/NewsletterForm';
+import InstagramFeed from '@/components/InstagramFeed';
+import { HeartHandshake, PackageCheck, RotateCcw } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -56,16 +58,24 @@ export default async function HomePage() {
     Math.min(0.75, Number(settings.hero_overlay_opacity || 0.14))
   );
 
-  const socialImages = [
-    products[0]?.images?.[0],
-    left,
-    products[1]?.images?.[0],
-    right,
-  ].filter(Boolean) as string[];
-
-  while (socialImages.length < 4 && hero) {
-    socialImages.push(hero);
-  }
+  const instagramPosts = [
+    {
+      image: settings.instagram_post_image_1 || products[0]?.images?.[0],
+      url: settings.instagram_post_url_1 || settings.instagram_url,
+    },
+    {
+      image: settings.instagram_post_image_2 || products[1]?.images?.[0],
+      url: settings.instagram_post_url_2 || settings.instagram_url,
+    },
+    {
+      image: settings.instagram_post_image_3 || products[2]?.images?.[0],
+      url: settings.instagram_post_url_3 || settings.instagram_url,
+    },
+    {
+      image: settings.instagram_post_image_4 || products[3]?.images?.[0] || hero,
+      url: settings.instagram_post_url_4 || settings.instagram_url,
+    },
+  ];
 
   return (
     <main
@@ -128,37 +138,31 @@ export default async function HomePage() {
       </section>
 
       <section id="about" className="bg-white">
-        <div className="relative grid md:grid-cols-2">
-          <div className="relative aspect-[4/5] md:aspect-[5/4] overflow-hidden bg-[var(--product-card-bg)]">
-            <SmartImage src={left} alt="Balisa lifestyle 1" />
+        <div className="purpose-mosaic">
+          <div className="purpose-tile purpose-tile-left">
+            <SmartImage src={left} alt="Balisa lifestyle left" />
           </div>
-
-          <div className="relative aspect-[4/5] md:aspect-[5/4] overflow-hidden bg-[var(--product-card-bg)]">
-            <SmartImage src={right} alt="Balisa lifestyle 2" />
+          <div className="purpose-tile purpose-tile-right">
+            <SmartImage src={right} alt="Balisa lifestyle right" />
           </div>
 
           <Link
             href={settings.purpose_button_url || `mailto:${settings.contact_email}`}
             className="contact-overlay-btn"
           >
-            {settings.purpose_button_label}
+            {settings.purpose_button_label || 'Contact us'}
           </Link>
         </div>
 
-        <div className="site-shell py-12 lg:py-16 text-center">
-          <p className="social-handle">{settings.instagram_handle}</p>
-
-          <div className="social-grid mt-8">
-            {socialImages.slice(0, 4).map((imageUrl, index) => (
-              <div key={`${imageUrl}-${index}`} className="social-grid-item">
-                <SmartImage src={imageUrl} alt={`Balisa detail ${index + 1}`} />
-              </div>
-            ))}
-          </div>
-        </div>
+        <InstagramFeed
+          handle={settings.instagram_handle}
+          instagramUrl={settings.instagram_url}
+          mode={settings.instagram_feed_mode || 'manual'}
+          manualPosts={instagramPosts}
+        />
       </section>
 
-      <section className="site-shell py-3 lg:py-6">
+      <section className="newsletter-shell">
         <NewsletterForm
           title={settings.newsletter_title || "Let's keep in touch"}
           text={
@@ -169,37 +173,41 @@ export default async function HomePage() {
         />
       </section>
 
-      <section id="contact" className="site-shell pt-4 pb-16 lg:pt-6 lg:pb-20">
-        <div className="info-stack">
-          <div>
-            <h2 className="info-heading">More info</h2>
-
-            <div className="info-links">
-              <a href={`mailto:${settings.contact_email}`}>Contact us</a>
-              <a href="#contact">Shipping policy</a>
-              <a href="#contact">Return policy</a>
-              <a href="#contact">Care instructions</a>
-            </div>
+      <section id="contact" className="site-shell info-section">
+        <div className="info-premium">
+          <div className="info-links-card">
+            <p className="info-eyebrow">More info</p>
+            <a href="#contact">Care Instructions</a>
+            <a href="#contact">Shipping policy</a>
+            <a href="#contact">Return Policy</a>
+            <a href={`mailto:${settings.contact_email}`}>Contact Us</a>
           </div>
 
-          <div className="info-copy">
-            <h3>{settings.about_title}</h3>
+          <div className="info-content-card">
+            <h2>{settings.about_title}</h2>
             <p>{settings.about_text}</p>
 
-            <div className="grid gap-6 md:grid-cols-3 mt-8 text-[15px] leading-7 text-black/62">
-              <div>
-                <p className="info-mini-title">Shipping</p>
-                <p>{settings.shipping_text}</p>
+            <div className="policy-grid">
+              <div className="policy-item">
+                <PackageCheck size={34} strokeWidth={1.45} aria-hidden="true" />
+                <div>
+                  <span>Shipping</span>
+                  <p>{settings.shipping_text}</p>
+                </div>
               </div>
-
-              <div>
-                <p className="info-mini-title">Returns</p>
-                <p>{settings.returns_text}</p>
+              <div className="policy-item">
+                <RotateCcw size={34} strokeWidth={1.45} aria-hidden="true" />
+                <div>
+                  <span>Returns</span>
+                  <p>{settings.returns_text}</p>
+                </div>
               </div>
-
-              <div>
-                <p className="info-mini-title">Care</p>
-                <p>{settings.care_text}</p>
+              <div className="policy-item">
+                <HeartHandshake size={34} strokeWidth={1.45} aria-hidden="true" />
+                <div>
+                  <span>Care</span>
+                  <p>{settings.care_text}</p>
+                </div>
               </div>
             </div>
           </div>

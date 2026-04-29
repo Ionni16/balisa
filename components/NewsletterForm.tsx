@@ -15,6 +15,7 @@ export default function NewsletterForm({
 
   function submit(event: React.FormEvent) {
     event.preventDefault();
+
     const cleaned = email.trim();
     const subject = encodeURIComponent('Newsletter subscription');
     const body = encodeURIComponent(
@@ -22,6 +23,7 @@ export default function NewsletterForm({
         ? `Hello, I would like to subscribe to the newsletter with this email: ${cleaned}`
         : 'Hello, I would like to subscribe to the newsletter.'
     );
+
     window.location.href = `mailto:${contactEmail}?subject=${subject}&body=${body}`;
   }
 
@@ -30,6 +32,7 @@ export default function NewsletterForm({
       <div className="newsletter-inner">
         <h2>{title}</h2>
         <p>{text}</p>
+
         <form onSubmit={submit} className="newsletter-form">
           <input
             type="email"
@@ -37,8 +40,11 @@ export default function NewsletterForm({
             onChange={(event) => setEmail(event.target.value)}
             placeholder="Email"
             aria-label="Email"
+            required
           />
-          <button type="submit" aria-label="Subscribe to newsletter">→</button>
+          <button type="submit" aria-label="Subscribe to newsletter">
+            →
+          </button>
         </form>
       </div>
     </section>

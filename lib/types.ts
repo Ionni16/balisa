@@ -55,6 +55,16 @@ export interface SiteSettings{
   contact_email:string;
   instagram_url:string;
   instagram_handle:string;
+  instagram_feed_mode:string;
+  instagram_access_token:string;
+  instagram_post_image_1:string;
+  instagram_post_url_1:string;
+  instagram_post_image_2:string;
+  instagram_post_url_2:string;
+  instagram_post_image_3:string;
+  instagram_post_url_3:string;
+  instagram_post_image_4:string;
+  instagram_post_url_4:string;
   tiktok_url:string;
   pinterest_url:string;
   newsletter_title:string;

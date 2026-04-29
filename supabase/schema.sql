@@ -80,7 +80,17 @@ create table if not exists public.site_settings (
 
   contact_email text default 'hello@balisa.it',
   instagram_url text default 'https://instagram.com/balisa',
-  instagram_handle text default '@balisa',
+  instagram_handle text default '@BALISA',
+  instagram_feed_mode text default 'manual',
+  instagram_access_token text default '',
+  instagram_post_image_1 text default '',
+  instagram_post_url_1 text default '',
+  instagram_post_image_2 text default '',
+  instagram_post_url_2 text default '',
+  instagram_post_image_3 text default '',
+  instagram_post_url_3 text default '',
+  instagram_post_image_4 text default '',
+  instagram_post_url_4 text default '',
   tiktok_url text default '',
   pinterest_url text default '',
 
@@ -92,8 +102,8 @@ create table if not exists public.site_settings (
   header_bg_color text default '#ffffff',
   page_bg_color text default '#ffffff',
   product_card_bg_color text default '#eeeeee',
-  footer_bg_color text default '#111111',
-  footer_text_color text default '#ffffff',
+  footer_bg_color text default '#ffffff',
+  footer_text_color text default '#191919',
   button_bg_color text default '#191919',
   button_text_color text default '#ffffff',
   text_color text default '#191919',
@@ -110,13 +120,23 @@ alter table public.site_settings add column if not exists announcement_text_colo
 alter table public.site_settings add column if not exists header_bg_color text default '#ffffff';
 alter table public.site_settings add column if not exists page_bg_color text default '#ffffff';
 alter table public.site_settings add column if not exists product_card_bg_color text default '#eeeeee';
-alter table public.site_settings add column if not exists footer_bg_color text default '#111111';
-alter table public.site_settings add column if not exists footer_text_color text default '#ffffff';
+alter table public.site_settings add column if not exists footer_bg_color text default '#ffffff';
+alter table public.site_settings add column if not exists footer_text_color text default '#191919';
 alter table public.site_settings add column if not exists button_bg_color text default '#191919';
 alter table public.site_settings add column if not exists button_text_color text default '#ffffff';
 alter table public.site_settings add column if not exists text_color text default '#191919';
 alter table public.site_settings add column if not exists muted_text_color text default '#666666';
 alter table public.site_settings add column if not exists hero_overlay_opacity text default '0.14';
+alter table public.site_settings add column if not exists instagram_feed_mode text default 'manual';
+alter table public.site_settings add column if not exists instagram_access_token text default '';
+alter table public.site_settings add column if not exists instagram_post_image_1 text default '';
+alter table public.site_settings add column if not exists instagram_post_url_1 text default '';
+alter table public.site_settings add column if not exists instagram_post_image_2 text default '';
+alter table public.site_settings add column if not exists instagram_post_url_2 text default '';
+alter table public.site_settings add column if not exists instagram_post_image_3 text default '';
+alter table public.site_settings add column if not exists instagram_post_url_3 text default '';
+alter table public.site_settings add column if not exists instagram_post_image_4 text default '';
+alter table public.site_settings add column if not exists instagram_post_url_4 text default '';
 
 insert into public.site_settings (
   brand_name,
@@ -168,8 +188,8 @@ select
   '#ffffff',
   '#ffffff',
   '#eeeeee',
-  '#111111',
   '#ffffff',
+  '#191919',
   '#191919',
   '#ffffff',
   '#191919',
@@ -205,3 +225,15 @@ create policy "Service role can manage product images"
 on storage.objects for all
 using (bucket_id = 'products')
 with check (bucket_id = 'products');
+
+
+-- Rendi il footer chiaro se provieni da una versione precedente.
+update public.site_settings
+set footer_bg_color = '#ffffff', footer_text_color = '#191919'
+where footer_bg_color = '#111111';
+
+
+-- Valori consigliati per la nuova sezione Instagram/footer.
+update public.site_settings
+set instagram_handle = upper(instagram_handle), footer_bg_color = '#ffffff', footer_text_color = '#191919'
+where true;

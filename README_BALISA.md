@@ -51,3 +51,16 @@ Da `/admin/settings`, sezione **Colors**, puoi modificare:
 - bottoni
 - testo principale
 - overlay hero
+
+
+## Instagram feed
+
+Da `/admin/settings` puoi scegliere:
+
+- `Instagram mode`: `manual`
+  - usa i campi `Instagram post image 1...4` e `Instagram post URL 1...4`
+- `Instagram mode`: `latest`
+  - mostra gli ultimi post usando Instagram Graph API
+  - inserisci `INSTAGRAM_ACCESS_TOKEN` su Vercel oppure il campo `Instagram access token` in admin
+
+Consiglio: per produzione usa la variabile Vercel `INSTAGRAM_ACCESS_TOKEN`, non salvare token sensibili nel database.
