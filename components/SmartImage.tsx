@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type SmartImageProps = {
   src?: string | null;
@@ -18,8 +18,21 @@ export default function SmartImage({
   imgClassName = "",
   contain = false,
 }: SmartImageProps) {
+  const safeSrc = useMemo(() => {
+    const value = typeof src === "string" ? src.trim() : "";
+    if (!value) return "";
+    try {
+      return encodeURI(value);
+    } catch {
+      return value;
+    }
+  }, [src]);
+
   const [failed, setFailed] = useState(false);
-  const safeSrc = typeof src === "string" && src.trim().length > 0 ? src.trim() : "";
+
+  useEffect(() => {
+    setFailed(false);
+  }, [safeSrc]);
 
   return (
     <div className={`absolute inset-0 overflow-hidden ${className}`}>

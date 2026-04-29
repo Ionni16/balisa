@@ -4,6 +4,7 @@ import ProductCard from '@/components/ProductCard';
 import {getSiteSettings} from '@/lib/settings';
 
 export const dynamic='force-dynamic';
+export const revalidate = 0;
 const categories=[['','All'],['mini','Mini'],['shoulder','Shoulder'],['crossbody','Crossbody'],['beach','Beach bags'],['tote','Totes'],['clutch','Clutches'],['custom','Custom']] as const;
 
 async function getProducts(category?:string, search?:string):Promise<Product[]>{

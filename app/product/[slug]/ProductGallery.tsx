@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SmartImage from '@/components/SmartImage';
 
 export default function ProductGallery({
@@ -22,6 +22,11 @@ export default function ProductGallery({
       });
   }, [images]);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (activeIndex >= gallery.length) setActiveIndex(0);
+  }, [activeIndex, gallery.length]);
+
   const activeImage = gallery[activeIndex] || gallery[0] || '';
 
   return (

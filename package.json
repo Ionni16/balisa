@@ -9,26 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "latest",
-    "framer-motion": "latest",
-    "lucide-react": "latest",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-hot-toast": "latest",
-    "stripe": "latest",
-    "zustand": "latest",
-    "@stripe/stripe-js": "latest"
+    "@supabase/supabase-js": "2.103.0",
+    "framer-motion": "11.18.2",
+    "lucide-react": "0.469.0",
+    "next": "14.2.5",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-hot-toast": "2.6.0",
+    "stripe": "16.12.0",
+    "zustand": "5.0.8",
+    "@stripe/stripe-js": "4.10.0"
   },
   "devDependencies": {
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
-    "autoprefixer": "latest",
-    "postcss": "latest",
-    "tailwindcss": "latest",
-    "typescript": "latest",
-    "eslint": "latest",
-    "eslint-config-next": "latest"
+    "@types/node": "24.10.1",
+    "@types/react": "18.3.27",
+    "@types/react-dom": "18.3.7",
+    "autoprefixer": "10.4.22",
+    "postcss": "8.5.6",
+    "tailwindcss": "3.4.18",
+    "typescript": "5.9.3",
+    "eslint": "8.57.1",
+    "eslint-config-next": "14.2.5"
   }
 }

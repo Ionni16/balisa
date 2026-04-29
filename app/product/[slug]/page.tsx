@@ -8,6 +8,7 @@ import SmartImage from '@/components/SmartImage';
 import ProductGallery from './ProductGallery';
 
 export const dynamic='force-dynamic';
+export const revalidate = 0;
 
 const colorMap:Record<string,string>={navy:'#073763',blue:'#073763',black:'#000',grey:'#5d5d5d',gray:'#5d5d5d',brown:'#6b4b38',burgundy:'#8b2638',red:'#d51f28',beige:'#efe8de',cream:'#efe8de',white:'#f7f3ed',pink:'#f3b8c1',orange:'#ef5b18',yellow:'#f2d13b',green:'#1f6b3a'};
 function colourValue(c:string){const k=c.toLowerCase().trim();return colorMap[k]||k;}

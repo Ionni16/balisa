@@ -1,12 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe } from "@/lib/stripe";
-import { supabaseAdmin } from "@/lib/supabase";
+import { supabaseAdmin, getSupabaseErrorMessage } from "@/lib/supabase";
 import Stripe from "stripe";
 
 export async function POST(req: NextRequest) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: getSupabaseErrorMessage() }, { status: 500 });
+  }
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) {
+    return NextResponse.json({ error: "Missing STRIPE_WEBHOOK_SECRET" }, { status: 500 });
+  }
+
   const body = await req.text();
-  const sig = req.headers.get("stripe-signature")!;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+  const sig = req.headers.get("stripe-signature");
+  if (!sig) return NextResponse.json({ error: "Missing Stripe signature" }, { status: 400 });
 
   let event: Stripe.Event;
   try {
@@ -47,6 +56,9 @@ export async function POST(req: NextRequest) {
         console.error("Supabase insert error:", error);
       } else {
         for (const item of items) {
+          const quantity = Math.max(0, Number(item.quantity) || 0);
+          if (!item.product_id || quantity === 0) continue;
+
           const { data: product } = await supabaseAdmin
             .from("products")
             .select("stock")
@@ -56,7 +68,7 @@ export async function POST(req: NextRequest) {
           if (product && product.stock > 0) {
             await supabaseAdmin
               .from("products")
-              .update({ stock: Math.max(0, product.stock - item.quantity) })
+              .update({ stock: Math.max(0, product.stock - quantity) })
               .eq("id", item.product_id);
           }
         }

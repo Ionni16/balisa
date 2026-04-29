@@ -47,6 +47,12 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 const inputClass =
   'w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3.5 text-[15px] text-neutral-950 shadow-sm outline-none transition placeholder:text-neutral-300 focus:border-neutral-950 focus:ring-4 focus:ring-neutral-950/5';
 
+function normalizeImages(images: unknown): string[] {
+  return Array.isArray(images)
+    ? images.map((image) => (typeof image === 'string' ? image.trim() : '')).filter(Boolean)
+    : [];
+}
+
 export default function AdminProducts() {
   const { adminKey } = useAdmin();
   const [items, setItems] = useState<Product[]>([]);
@@ -77,16 +83,18 @@ export default function AdminProducts() {
   }, [adminKey]);
 
   async function save() {
-    if (!editing?.name || !editing?.price) {
-      return toast.error('Name and price are required');
+    const price = Number(editing?.price);
+    if (!editing?.name?.trim() || !Number.isFinite(price) || price < 0) {
+      return toast.error('Name and valid price are required');
     }
 
     setSaving(true);
     const response = await fetch('/api/products', {
       method: editing.id ? 'PATCH' : 'POST',
       headers,
-      body: JSON.stringify(editing),
+      body: JSON.stringify({ ...editing, images: normalizeImages(editing.images) }),
     });
+    const data = await response.json().catch(() => null);
     setSaving(false);
 
     if (response.ok) {
@@ -94,7 +102,7 @@ export default function AdminProducts() {
       setEditing(null);
       load();
     } else {
-      toast.error((await response.json()).error || 'Error');
+      toast.error(data?.error || 'Error saving product');
     }
   }
 
@@ -110,26 +118,34 @@ export default function AdminProducts() {
   async function persistImages(productId: string | undefined, images: string[]) {
     if (!productId) return true;
 
+    const cleanImages = normalizeImages(images);
     const response = await fetch('/api/products', {
       method: 'PATCH',
       headers,
-      body: JSON.stringify({ id: productId, images }),
+      body: JSON.stringify({ id: productId, images: cleanImages }),
     });
+    const data = await response.json().catch(() => null);
 
     if (!response.ok) {
-      toast.error((await response.json()).error || 'Could not save image gallery');
+      toast.error(data?.error || 'Could not save image gallery');
       return false;
     }
 
     setItems((current) =>
-      current.map((product) => (product.id === productId ? { ...product, images } : product))
+      current.map((product) => (product.id === productId ? { ...product, images: cleanImages } : product))
     );
+    setEditing((current) => (current?.id === productId ? { ...current, images: cleanImages } : current));
     return true;
   }
 
   async function upload(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
-    if (!file) return;
+    if (!file || uploading) return;
+
+    if (!file.type.startsWith('image/')) {
+      if (fileRef.current) fileRef.current.value = '';
+      return toast.error('Select an image file');
+    }
 
     setUploading(true);
     const fd = new FormData();
@@ -140,24 +156,26 @@ export default function AdminProducts() {
       headers: { 'x-admin-key': adminKey },
       body: fd,
     });
-    const data = await response.json();
+    const data = await response.json().catch(() => null);
     setUploading(false);
 
-    if (data.url) {
-      const nextImages = [data.url, ...((editing?.images as string[]) || [])];
+    if (response.ok && data?.url) {
+      const currentImages = normalizeImages(editing?.images);
+      const nextImages = [data.url, ...currentImages.filter((image) => image !== data.url)];
       setEditing((current) => ({ ...(current || {}), images: nextImages }));
       const saved = await persistImages(editing?.id, nextImages);
-      toast.success(saved && editing?.id ? 'Image added and saved as cover' : 'Image added as cover image');
+      toast.success(saved && editing?.id ? 'Image added and visible on site' : 'Image added. Save the new product to publish it.');
     } else {
-      toast.error(data.error || 'Upload error');
+      toast.error(data?.error || 'Upload error');
     }
 
     if (fileRef.current) fileRef.current.value = '';
   }
 
   async function setImageAsCover(index: number) {
-    if (!editing?.images?.length) return;
-    const images = [...(editing.images as string[])];
+    if (!editing) return;
+    const images = normalizeImages(editing.images);
+    if (!images.length) return;
     const [selected] = images.splice(index, 1);
     images.unshift(selected);
     setEditing({ ...editing, images });
@@ -165,8 +183,9 @@ export default function AdminProducts() {
   }
 
   async function moveImage(index: number, direction: -1 | 1) {
-    if (!editing?.images?.length) return;
-    const images = [...(editing.images as string[])];
+    if (!editing) return;
+    const images = normalizeImages(editing.images);
+    if (!images.length) return;
     const nextIndex = index + direction;
     if (nextIndex < 0 || nextIndex >= images.length) return;
     [images[index], images[nextIndex]] = [images[nextIndex], images[index]];
@@ -176,7 +195,7 @@ export default function AdminProducts() {
 
   async function removeImage(img: string) {
     if (!editing) return;
-    const images = ((editing.images as string[]) || []).filter((x) => x !== img);
+    const images = normalizeImages(editing.images).filter((x) => x !== img);
     setEditing({ ...editing, images });
     await persistImages(editing.id, images);
   }
@@ -405,7 +424,7 @@ export default function AdminProducts() {
                   </div>
 
                   <div className="mb-4 grid grid-cols-2 gap-3">
-                    {((editing.images as string[]) || []).map((img, index, images) => (
+                    {normalizeImages(editing.images).map((img, index, images) => (
                       <div key={`${img}-${index}`} className="admin-image-card !border-neutral-200 !bg-neutral-50">
                         <img src={img} className="h-full w-full object-cover" alt={`Product image ${index + 1}`} />
 
@@ -450,7 +469,7 @@ export default function AdminProducts() {
                     ))}
                   </div>
 
-                  {!((editing.images as string[]) || []).length ? (
+                  {!normalizeImages(editing.images).length ? (
                     <div className="mb-4 rounded-2xl border border-dashed border-neutral-300 bg-neutral-50 px-4 py-8 text-center text-sm text-neutral-500">
                       No images yet. Upload the cover image first.
                     </div>
@@ -459,7 +478,8 @@ export default function AdminProducts() {
                   <input ref={fileRef} type="file" hidden accept="image/*" onChange={upload} />
                   <button
                     onClick={() => fileRef.current?.click()}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white py-3 text-xs font-bold uppercase tracking-[.16em] text-neutral-950 transition hover:border-neutral-950 hover:bg-neutral-950 hover:text-white"
+                    disabled={uploading || !adminKey}
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white py-3 text-xs font-bold uppercase tracking-[.16em] text-neutral-950 transition hover:border-neutral-950 hover:bg-neutral-950 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {uploading ? <Loader2 className="animate-spin" size={15} /> : <Upload size={15} />} Upload image
                   </button>
