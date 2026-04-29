@@ -35,23 +35,19 @@ Stripe serve per il checkout reale. Puoi configurarlo dopo.
 8. Inserisci `ADMIN_SECRET_KEY`.
 9. Carica prodotti, hero image, immagini homepage e testi.
 
-## Admin
+## Immagini che non si vedono su mobile / Vercel
 
-Da `/admin/settings` puoi modificare:
-- logo
-- hero image
+Questa versione usa `<img>` con fallback invece del Next Image Optimizer per le immagini caricate da admin. Questo evita errori tipo `/_next/image 402` e nasconde i broken-image icon sostituendoli con un placeholder pulito.
+
+## Personalizzazione colori
+
+Da `/admin/settings`, sezione **Colors**, puoi modificare:
 - announcement bar
-- titolo homepage
-- immagini sezione Made with purpose
-- testo contatti
-- shipping
-- care instructions
-- social
-
-Da `/admin/products` puoi modificare prodotti, prezzo, colori, stock, immagini e featured.
-
-
-## Se le modifiche admin non si vedono subito
-
-Questa versione usa `cache: no-store` e API dinamiche. Dopo aver premuto **Salva tutto** in `/admin/settings`, torna sulla homepage e fai refresh.
-Se stai usando Vercel, non serve rebuild: i dati vengono letti da Supabase a runtime.
+- testo announcement
+- header
+- background pagina
+- background card prodotto
+- footer
+- bottoni
+- testo principale
+- overlay hero

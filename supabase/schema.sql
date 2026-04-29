@@ -1,6 +1,6 @@
 -- BALISA — Supabase schema completo
 -- Esegui questo file nel SQL Editor di Supabase.
--- Dopo l'esecuzione crea/verifica anche il bucket Storage pubblico chiamato: products
+-- Poi crea/verifica un bucket Storage pubblico chiamato: products
 
 create extension if not exists "pgcrypto";
 
@@ -86,8 +86,37 @@ create table if not exists public.site_settings (
 
   newsletter_title text default 'Join the Balisa list',
   newsletter_text text default 'Be first to know about limited drops, custom openings and new colour stories.',
+
+  announcement_bg_color text default '#f3b8c1',
+  announcement_text_color text default '#ffffff',
+  header_bg_color text default '#ffffff',
+  page_bg_color text default '#ffffff',
+  product_card_bg_color text default '#eeeeee',
+  footer_bg_color text default '#111111',
+  footer_text_color text default '#ffffff',
+  button_bg_color text default '#191919',
+  button_text_color text default '#ffffff',
+  text_color text default '#191919',
+  muted_text_color text default '#666666',
+  hero_overlay_opacity text default '0.14',
+
   updated_at timestamptz not null default now()
 );
+
+-- Se hai già creato la tabella site_settings in una versione precedente,
+-- questi ALTER aggiungono i campi mancanti senza cancellare dati.
+alter table public.site_settings add column if not exists announcement_bg_color text default '#f3b8c1';
+alter table public.site_settings add column if not exists announcement_text_color text default '#ffffff';
+alter table public.site_settings add column if not exists header_bg_color text default '#ffffff';
+alter table public.site_settings add column if not exists page_bg_color text default '#ffffff';
+alter table public.site_settings add column if not exists product_card_bg_color text default '#eeeeee';
+alter table public.site_settings add column if not exists footer_bg_color text default '#111111';
+alter table public.site_settings add column if not exists footer_text_color text default '#ffffff';
+alter table public.site_settings add column if not exists button_bg_color text default '#191919';
+alter table public.site_settings add column if not exists button_text_color text default '#ffffff';
+alter table public.site_settings add column if not exists text_color text default '#191919';
+alter table public.site_settings add column if not exists muted_text_color text default '#666666';
+alter table public.site_settings add column if not exists hero_overlay_opacity text default '0.14';
 
 insert into public.site_settings (
   brand_name,
@@ -104,7 +133,19 @@ insert into public.site_settings (
   care_text,
   contact_email,
   instagram_handle,
-  instagram_url
+  instagram_url,
+  announcement_bg_color,
+  announcement_text_color,
+  header_bg_color,
+  page_bg_color,
+  product_card_bg_color,
+  footer_bg_color,
+  footer_text_color,
+  button_bg_color,
+  button_text_color,
+  text_color,
+  muted_text_color,
+  hero_overlay_opacity
 )
 select
   'Balisa',
@@ -121,11 +162,21 @@ select
   'Hand wash in cold water with mild soap and lay flat to dry.',
   'hello@balisa.it',
   '@balisa',
-  'https://instagram.com/balisa'
+  'https://instagram.com/balisa',
+  '#f3b8c1',
+  '#ffffff',
+  '#ffffff',
+  '#ffffff',
+  '#eeeeee',
+  '#111111',
+  '#ffffff',
+  '#191919',
+  '#ffffff',
+  '#191919',
+  '#666666',
+  '0.14'
 where not exists (select 1 from public.site_settings);
 
--- RLS: il sito pubblico può leggere prodotti e impostazioni.
--- Le modifiche avvengono solo dalle API server usando SUPABASE_SERVICE_ROLE_KEY.
 alter table public.products enable row level security;
 alter table public.orders enable row level security;
 alter table public.site_settings enable row level security;
@@ -141,7 +192,7 @@ on public.site_settings for select
 using (true);
 
 -- Storage policies per bucket pubblico "products".
--- Se il bucket non esiste, crealo da Supabase Dashboard:
+-- Crea da Supabase Dashboard:
 -- Storage -> New bucket -> name: products -> Public bucket: ON
 
 drop policy if exists "Public can read product images" on storage.objects;

@@ -1,7 +1,7 @@
 import {Product} from '@/lib/types';
 import Link from 'next/link';
-import Image from 'next/image';
 import {formatPrice} from '@/lib/stripe';
+import SmartImage from '@/components/SmartImage';
 
 const colorMap:Record<string,string>={
   navy:'#073763',blue:'#073763',black:'#000',grey:'#5d5d5d',gray:'#5d5d5d',
@@ -20,16 +20,7 @@ export default function ProductCard({product,index=0}:{product:Product;index?:nu
 
   return <Link href={`/product/${product.slug}`} className="group block fade-up" style={{animationDelay:`${index*45}ms`}}>
     <div className="relative aspect-square product-bg overflow-hidden">
-      {product.images?.[0]
-        ? <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            className="object-contain p-0 scale-[1.32] transition duration-500 group-hover:scale-[1.38]"
-          />
-        : <div className="h-full grid place-items-center logo-word text-5xl text-black/10">Balisa</div>
-      }
-
+      <SmartImage src={product.images?.[0]} alt={product.name} contain imgClassName="p-0 scale-[1.34] transition duration-500 group-hover:scale-[1.40]"/>
       {product.stock===0&&<div className="absolute inset-0 bg-white/75 grid place-items-center text-xs uppercase tracking-[.2em]">Sold out</div>}
     </div>
 

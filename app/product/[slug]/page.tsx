@@ -3,8 +3,8 @@ import { Product } from '@/lib/types';
 import { formatPrice } from '@/lib/stripe';
 import { notFound } from 'next/navigation';
 import ProductActions from './ProductActions';
-import Image from 'next/image';
 import type { Metadata } from 'next';
+import SmartImage from '@/components/SmartImage';
 
 export const dynamic='force-dynamic';
 
@@ -35,14 +35,14 @@ export default async function ProductPage({params}:{params:{slug:string}}){
   const colors=(product.colors&&product.colors.length?product.colors:['Blue','Black','Grey','Brown','Burgundy','Red','Beige']).slice(0,7);
   const images=product.images?.length?product.images:[];
 
-  return <main className="pt-[124px]">
+  return <main className="pt-[102px]">
     <section className="site-shell py-8 lg:py-10 grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-16 items-start">
       <div>
         <div className="relative aspect-square product-bg overflow-hidden">
-          {images[0]?<Image src={images[0]} alt={product.name} fill priority className="object-contain p-3 scale-[1.08]"/>:<div className="h-full grid place-items-center logo-word text-7xl text-black/10">Balisa</div>}
+          <SmartImage src={images[0]} alt={product.name} contain imgClassName="p-0 scale-[1.12]"/>
         </div>
         {images.length>1&&<div className="mt-5 grid grid-cols-4 gap-3">
-          {images.slice(0,4).map((img,i)=><div key={img} className={`relative aspect-square product-bg overflow-hidden ${i===0?'ring-2 ring-black':''}`}><Image src={img} alt={`${product.name} ${i+1}`} fill className="object-contain p-1 scale-[1.08]"/></div>)}
+          {images.slice(0,4).map((img,i)=><div key={img} className={`relative aspect-square product-bg overflow-hidden ${i===0?'ring-2 ring-black':''}`}><SmartImage src={img} alt={`${product.name} ${i+1}`} contain imgClassName="p-0 scale-[1.10]"/></div>)}
         </div>}
       </div>
 
@@ -66,7 +66,7 @@ export default async function ProductPage({params}:{params:{slug:string}}){
           <div className="grid gap-3">
             {related.map(r=><a href={`/product/${r.slug}`} key={r.id} className="border border-black/20 min-h-[78px] flex items-center gap-4 px-4 hover:border-black transition-colors">
               <span className="w-4 h-4 border border-black/70 rounded-[3px]"/>
-              <span className="relative w-12 h-12 product-bg shrink-0">{r.images?.[0]&&<Image src={r.images[0]} alt={r.name} fill className="object-contain p-1"/>}</span>
+              <span className="relative w-12 h-12 product-bg shrink-0"><SmartImage src={r.images?.[0]} alt={r.name} contain imgClassName="p-0 scale-[1.15]"/></span>
               <span className="text-sm leading-5">{r.name}<br/><span className="text-black/75">{formatPrice(r.price)}</span></span>
             </a>)}
           </div>

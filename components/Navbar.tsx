@@ -1,4 +1,5 @@
 "use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
 import {ShoppingBag,Menu,X,Search,UserRound} from 'lucide-react';
@@ -20,18 +21,19 @@ export default function Navbar(){
   const[query,setQuery]=useState('');
 
   useEffect(()=>{
-  let alive=true;
-  const load=()=>fetch(`/api/settings?t=${Date.now()}`,{cache:'no-store'})
-    .then(r=>r.ok?r.json():null)
-    .then(d=>{if(alive&&d)setSettings({...DEFAULT_SETTINGS,...d})})
-    .catch(()=>null);
-  load();
-  const onFocus=()=>load();
-  const onStorage=(e:StorageEvent)=>{if(e.key==='balisa-settings-updated')load()};
-  window.addEventListener('focus',onFocus);
-  window.addEventListener('storage',onStorage);
-  return()=>{alive=false;window.removeEventListener('focus',onFocus);window.removeEventListener('storage',onStorage)};
-},[]);
+    let alive=true;
+    const load=()=>fetch(`/api/settings?t=${Date.now()}`,{cache:'no-store'})
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{if(alive&&d)setSettings({...DEFAULT_SETTINGS,...d})})
+      .catch(()=>null);
+    load();
+    const onFocus=()=>load();
+    const onStorage=(e:StorageEvent)=>{if(e.key==='balisa-settings-updated')load()};
+    window.addEventListener('focus',onFocus);
+    window.addEventListener('storage',onStorage);
+    return()=>{alive=false;window.removeEventListener('focus',onFocus);window.removeEventListener('storage',onStorage)};
+  },[]);
+
   if(pathname.startsWith('/admin'))return null;
 
   function submitSearch(e:React.FormEvent){
@@ -43,22 +45,39 @@ export default function Navbar(){
   }
 
   return <>
-    <div className="fixed inset-x-0 top-0 z-50 bg-white">
-      {settings.announcement&&<Link href={settings.announcement_url||'/shop'} className="block bg-[#f3b8c1] text-white text-center text-[14px] tracking-[0.08em] py-2 hover:bg-[#efadb8] transition-colors">{settings.announcement} <span aria-hidden>→</span></Link>}
-      <header className="bg-white border-b border-black/5">
-        <div className="relative site-shell h-[72px] flex items-center justify-between">
-          <nav className="hidden lg:flex items-center gap-7">
-            {links.map(([href,label],idx)=><Link key={`${href}-${label}`} href={href} className={`nav-link ${idx===0&&pathname==='/'?'nav-link-active':''}`}>{label}</Link>)}
+    <div className="fixed inset-x-0 top-0 z-50">
+      {settings.announcement&&
+        <Link href={settings.announcement_url||'/shop'} className="announcement-bar">
+          <span className="announcement-inner">
+            <span className="announcement-text">{settings.announcement}</span>
+            <span className="announcement-arrow" aria-hidden>→</span>
+          </span>
+        </Link>
+      }
+
+      <header className="main-header">
+        <div className="site-shell header-row">
+          <nav className="header-nav">
+            {links.map(([href,label],idx)=>
+              <Link key={`${href}-${label}`} href={href} className={`nav-link ${idx===0&&pathname==='/'?'nav-link-active':''}`}>{label}</Link>
+            )}
           </nav>
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2 inline-flex items-center justify-center" aria-label={settings.brand_name}>
-            {settings.logo_url?<Image src={settings.logo_url} alt={settings.brand_name} width={134} height={42} className="h-8 w-auto object-contain" unoptimized priority/>:<span className="logo-word text-3xl">{settings.brand_name}</span>}
+
+          <Link href="/" className="header-logo" aria-label={settings.brand_name}>
+            {settings.logo_url
+              ? <Image src={settings.logo_url} alt={settings.brand_name} width={160} height={58} className="h-9 w-auto object-contain" unoptimized priority/>
+              : <span className="logo-word text-3xl">{settings.brand_name}</span>}
           </Link>
-          <div className="flex items-center gap-2 ml-auto">
-            <span className="hidden lg:inline text-[14px] mr-3">Italy | EUR €</span>
-            <button onClick={()=>setSearchOpen(true)} className="p-2.5 hover:opacity-60 transition-opacity" aria-label="Search products"><Search size={22} strokeWidth={1.5}/></button>
-            <Link href="/admin" className="hidden sm:block p-2.5 hover:opacity-60 transition-opacity" aria-label="Admin"><UserRound size={22} strokeWidth={1.5}/></Link>
-            <button onClick={openCart} className="relative p-2.5 hover:opacity-60 transition-opacity" aria-label="Cart"><ShoppingBag size={22} strokeWidth={1.5}/>{itemCount()>0&&<span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-ink text-white text-[10px] flex items-center justify-center">{itemCount()}</span>}</button>
-            <button className="lg:hidden p-2.5" onClick={()=>setOpen(!open)} aria-label="Menu">{open?<X/>:<Menu/>}</button>
+
+          <div className="header-actions">
+            <span className="currency-label desktop-only">Italy | EUR €</span>
+            <button onClick={()=>setSearchOpen(true)} className="header-icon hide-on-mobile" aria-label="Search products"><Search size={23} strokeWidth={1.6}/></button>
+            <Link href="/admin" className="header-icon hide-on-mobile" aria-label="Admin"><UserRound size={23} strokeWidth={1.6}/></Link>
+            <button onClick={openCart} className="header-icon relative" aria-label="Cart">
+              <ShoppingBag size={24} strokeWidth={1.7}/>
+              {itemCount()>0&&<span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-black text-white text-[12px] flex items-center justify-center">{itemCount()}</span>}
+            </button>
+            <button className="header-icon mobile-only" onClick={()=>setOpen(!open)} aria-label="Menu">{open?<X size={33}/>:<Menu size={36}/>}</button>
           </div>
         </div>
       </header>
@@ -75,8 +94,8 @@ export default function Navbar(){
       </form>
     </div>}
 
-    {open&&<div className="fixed inset-0 z-40 bg-white pt-36 px-8 lg:hidden">
-      <div className="flex flex-col gap-6">{links.map(([href,label])=><Link key={`${href}-${label}-mobile`} href={href} onClick={()=>setOpen(false)} className="text-4xl tracking-[-.04em]">{label}</Link>)}</div>
+    {open&&<div className="fixed inset-0 z-40 bg-white pt-[190px] px-8 lg:hidden">
+      <div className="flex flex-col gap-7">{links.map(([href,label])=><Link key={`${href}-${label}-mobile`} href={href} onClick={()=>setOpen(false)} className="text-4xl tracking-[-.04em]">{label}</Link>)}</div>
       <div className="mt-10 pt-8 border-t border-black/10 text-sm text-black/55 grid gap-3"><a href={`mailto:${settings.contact_email}`}>{settings.contact_email}</a><a href={settings.instagram_url} target="_blank" rel="noreferrer">{settings.instagram_handle}</a></div>
     </div>}
   </>

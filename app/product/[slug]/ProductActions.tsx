@@ -14,13 +14,7 @@ export default function ProductActions({ product }: { product: Product }) {
 
   function add() {
     if (soldOut) return;
-
-    // The cart store expects: addItem(product, color)
-    // To support quantity, call it once per selected item.
-    for (let i = 0; i < quantity; i += 1) {
-      addItem(product, color);
-    }
-
+    for (let i = 0; i < quantity; i += 1) addItem(product, color);
     toast.success(quantity > 1 ? `${quantity} items added to cart` : "Added to cart");
   }
 
@@ -29,16 +23,8 @@ export default function ProductActions({ product }: { product: Product }) {
       {product.colors?.length > 0 && (
         <label className="block mb-5">
           <span className="block text-[13px] text-black/60 mb-2">Color</span>
-          <select
-            value={color}
-            onChange={(event) => setColor(event.target.value)}
-            className="input-field max-w-[260px]"
-          >
-            {product.colors.map((itemColor) => (
-              <option key={itemColor} value={itemColor}>
-                {itemColor}
-              </option>
-            ))}
+          <select value={color} onChange={(event) => setColor(event.target.value)} className="input-field max-w-[260px]">
+            {product.colors.map((itemColor) => <option key={itemColor} value={itemColor}>{itemColor}</option>)}
           </select>
         </label>
       )}
@@ -46,30 +32,13 @@ export default function ProductActions({ product }: { product: Product }) {
       <div className="mb-7">
         <span className="block text-[13px] text-black/60 mb-2">Quantity</span>
         <div className="qty-box">
-          <button
-            type="button"
-            onClick={() => setQuantity((current) => Math.max(1, current - 1))}
-            aria-label="Decrease quantity"
-          >
-            <Minus size={14} />
-          </button>
+          <button type="button" onClick={() => setQuantity((current) => Math.max(1, current - 1))} aria-label="Decrease quantity"><Minus size={14} /></button>
           <span>{quantity}</span>
-          <button
-            type="button"
-            onClick={() => setQuantity((current) => current + 1)}
-            aria-label="Increase quantity"
-          >
-            <Plus size={14} />
-          </button>
+          <button type="button" onClick={() => setQuantity((current) => current + 1)} aria-label="Increase quantity"><Plus size={14} /></button>
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={add}
-        disabled={soldOut}
-        className="btn-keylon w-full max-w-[430px] disabled:opacity-50 disabled:cursor-not-allowed"
-      >
+      <button type="button" onClick={add} disabled={soldOut} className="btn-keylon w-full max-w-[430px] disabled:opacity-50 disabled:cursor-not-allowed">
         {soldOut ? "Sold out" : "Add to cart"}
       </button>
     </div>

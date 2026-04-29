@@ -85,7 +85,7 @@ export default function CartDrawer() {
                             src={item.product.images[0]}
                             alt={item.product.name}
                             fill
-                            className="object-cover"
+                            className="object-contain p-1" unoptimized
                           />
                         )}
                       </div>
