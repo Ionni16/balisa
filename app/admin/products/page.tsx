@@ -36,6 +36,29 @@ const EMPTY: Partial<Product> = {
 
 const CATS = ['clutch', 'beach', 'ibiza', 'tote', 'custom', 'mini', 'shoulder', 'crossbody'];
 
+const COLOR_OPTIONS = [
+  { label: 'Blue', value: 'blue', hex: '#073763' },
+  { label: 'Black', value: 'black', hex: '#000000' },
+  { label: 'Grey', value: 'grey', hex: '#5d5d5d' },
+  { label: 'Brown', value: 'brown', hex: '#6b4b38' },
+  { label: 'Burgundy', value: 'burgundy', hex: '#8b2638' },
+  { label: 'Red', value: 'red', hex: '#d51f28' },
+  { label: 'Beige', value: 'beige', hex: '#efe8de' },
+  { label: 'Pink', value: 'pink', hex: '#f3b8c1' },
+  { label: 'Purple', value: 'purple', hex: '#7c5cff' },
+  { label: 'Lilac', value: 'lilac', hex: '#c8a2ff' },
+  { label: 'White', value: 'white', hex: '#f7f3ed' },
+  { label: 'Natural', value: 'natural', hex: '#e8dfd1' },
+  { label: 'Green', value: 'green', hex: '#1f6b3a' },
+  { label: 'Yellow', value: 'yellow', hex: '#f2d13b' },
+  { label: 'Orange', value: 'orange', hex: '#ef5b18' },
+];
+
+function normalizeColors(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return Array.from(new Set(value.map((item) => String(item).trim()).filter(Boolean)));
+}
+
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
     <span className="mb-2 block text-[11px] font-bold uppercase tracking-[0.18em] text-neutral-500">
@@ -66,6 +89,15 @@ export default function AdminProducts() {
     'Content-Type': 'application/json',
     'x-admin-key': adminKey,
   };
+
+  function updateColors(colors: string[]) {
+    setEditing((current) => ({ ...(current || {}), colors: normalizeColors(colors) }));
+  }
+
+  function toggleColor(color: string) {
+    const current = normalizeColors(editing?.colors);
+    updateColors(current.includes(color) ? current.filter((item) => item !== color) : [...current, color]);
+  }
 
   async function load() {
     const response = await fetch('/api/products', {
@@ -356,22 +388,48 @@ export default function AdminProducts() {
                           ))}
                         </select>
                       </label>
-                      <label>
-                        <FieldLabel>Colours, comma separated</FieldLabel>
+                      <div>
+                        <FieldLabel>Colours visible on site</FieldLabel>
+                        <div className="mb-3 grid grid-cols-3 gap-2 sm:grid-cols-4">
+                          {COLOR_OPTIONS.map((color) => {
+                            const selected = normalizeColors(editing.colors).includes(color.value);
+                            return (
+                              <button
+                                key={color.value}
+                                type="button"
+                                onClick={() => toggleColor(color.value)}
+                                className={`flex items-center gap-2 rounded-2xl border px-3 py-2 text-xs font-semibold transition ${
+                                  selected
+                                    ? 'border-neutral-950 bg-neutral-950 text-white'
+                                    : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400'
+                                }`}
+                              >
+                                <span
+                                  className="h-4 w-4 rounded-full border border-black/10"
+                                  style={{ backgroundColor: color.hex }}
+                                />
+                                {color.label}
+                              </button>
+                            );
+                          })}
+                        </div>
                         <input
                           className={inputClass}
-                          value={((editing.colors as string[]) || []).join(', ')}
+                          placeholder="Custom colours: #f3b8c1, purple, white"
+                          value={normalizeColors(editing.colors).join(', ')}
                           onChange={(e) =>
-                            setEditing({
-                              ...editing,
-                              colors: e.target.value
+                            updateColors(
+                              e.target.value
                                 .split(',')
                                 .map((x) => x.trim())
-                                .filter(Boolean),
-                            })
+                                .filter(Boolean)
+                            )
                           }
                         />
-                      </label>
+                        <p className="mt-2 text-xs leading-5 text-neutral-400">
+                          Only these selected colours are shown as dots on the shop and product page.
+                        </p>
+                      </div>
                     </div>
 
                     <label>
@@ -389,6 +447,16 @@ export default function AdminProducts() {
                         className={inputClass}
                         value={editing.dimensions || ''}
                         onChange={(e) => setEditing({ ...editing, dimensions: e.target.value })}
+                      />
+                    </label>
+
+                    <label>
+                      <FieldLabel>Care instructions</FieldLabel>
+                      <textarea
+                        rows={3}
+                        className={inputClass}
+                        value={editing.care || ''}
+                        onChange={(e) => setEditing({ ...editing, care: e.target.value })}
                       />
                     </label>
 
@@ -475,10 +543,17 @@ export default function AdminProducts() {
                     </div>
                   ) : null}
 
-                  <input ref={fileRef} type="file" hidden accept="image/*" onChange={upload} />
+                  <input ref={fileRef} type="file" hidden accept="image/*" onChange={upload} disabled={!editing?.id || uploading} />
+
+                  {!editing?.id ? (
+                    <p className="mb-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-800">
+                      Save the product first, then upload images. This guarantees that the image is saved to the correct product.
+                    </p>
+                  ) : null}
+
                   <button
                     onClick={() => fileRef.current?.click()}
-                    disabled={uploading || !adminKey}
+                    disabled={!editing?.id || uploading || !adminKey}
                     className="flex w-full items-center justify-center gap-2 rounded-2xl border border-neutral-300 bg-white py-3 text-xs font-bold uppercase tracking-[.16em] text-neutral-950 transition hover:border-neutral-950 hover:bg-neutral-950 hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {uploading ? <Loader2 className="animate-spin" size={15} /> : <Upload size={15} />} Upload image

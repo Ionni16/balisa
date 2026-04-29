@@ -10,8 +10,9 @@ import ProductGallery from './ProductGallery';
 export const dynamic='force-dynamic';
 export const revalidate = 0;
 
-const colorMap:Record<string,string>={navy:'#073763',blue:'#073763',black:'#000',grey:'#5d5d5d',gray:'#5d5d5d',brown:'#6b4b38',burgundy:'#8b2638',red:'#d51f28',beige:'#efe8de',cream:'#efe8de',white:'#f7f3ed',pink:'#f3b8c1',orange:'#ef5b18',yellow:'#f2d13b',green:'#1f6b3a'};
+const colorMap:Record<string,string>={navy:'#073763',blue:'#073763',black:'#000000',grey:'#5d5d5d',gray:'#5d5d5d',brown:'#6b4b38',burgundy:'#8b2638',red:'#d51f28',beige:'#efe8de',cream:'#efe8de',white:'#f7f3ed',pink:'#f3b8c1',orange:'#ef5b18',yellow:'#f2d13b',green:'#1f6b3a',purple:'#7c5cff',lilac:'#c8a2ff',fuchsia:'#d63384',natural:'#e8dfd1'};
 function colourValue(c:string){const k=c.toLowerCase().trim();return colorMap[k]||k;}
+function productColors(product:Product){return Array.isArray(product.colors)?product.colors.map(color=>String(color).trim()).filter(Boolean).slice(0,7):[];}
 
 function looksLikeUuid(value:string){
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
@@ -55,7 +56,7 @@ export default async function ProductPage({params}:{params:{slug:string}}){
   const product=await getProduct(params.slug);
   if(!product)notFound();
   const related=await getRelated(product.id);
-  const colors=(product.colors&&product.colors.length?product.colors:['Blue','Black','Grey','Brown','Burgundy','Red','Beige']).slice(0,7);
+  const colors=productColors(product);
   const images=product.images?.length?product.images:[];
 
   return <main className="pt-[124px] md:pt-[102px]">
@@ -67,7 +68,7 @@ export default async function ProductPage({params}:{params:{slug:string}}){
       <aside className="lg:pt-3">
         <h1 className="text-[34px] md:text-[24px] leading-tight font-normal mb-5 md:mb-6">{product.name}</h1>
         <p className="text-[24px] md:text-[18px] mb-7">{formatPrice(product.price)} EUR</p>
-        <div className="flex gap-3 mb-8">{colors.map((c,i)=><span key={`${c}-${i}`} className="color-dot !w-[24px] !h-[24px]" style={{background:colourValue(c)}} title={c}/>)}</div>
+        {colors.length>0&&<div className="flex gap-3 mb-8">{colors.map((c,i)=><span key={`${c}-${i}`} className="color-dot !w-[24px] !h-[24px]" style={{background:colourValue(c)}} title={c}/>)}</div>}
         <div className="text-[15px] leading-8 text-black/68 max-w-[520px] space-y-5">
           <p>{product.description}</p>
           <p>Made from <b>100% cotton</b> and handcrafted just for you. Ready to ship in 1 week.</p>
