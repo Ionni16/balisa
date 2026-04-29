@@ -47,13 +47,17 @@ export default function ThemeVars() {
       if (event.key === "balisa-settings-updated") applyTheme();
     };
 
+    const onCustomUpdate = () => applyTheme();
+
     window.addEventListener("focus", onFocus);
     window.addEventListener("storage", onStorage);
+    window.addEventListener("balisa-settings-updated", onCustomUpdate);
 
     return () => {
       cancelled = true;
       window.removeEventListener("focus", onFocus);
       window.removeEventListener("storage", onStorage);
+      window.removeEventListener("balisa-settings-updated", onCustomUpdate);
     };
   }, []);
 

@@ -29,9 +29,11 @@ export default function Navbar(){
     load();
     const onFocus=()=>load();
     const onStorage=(e:StorageEvent)=>{if(e.key==='balisa-settings-updated')load()};
+    const onCustomUpdate=()=>load();
     window.addEventListener('focus',onFocus);
     window.addEventListener('storage',onStorage);
-    return()=>{alive=false;window.removeEventListener('focus',onFocus);window.removeEventListener('storage',onStorage)};
+    window.addEventListener('balisa-settings-updated',onCustomUpdate);
+    return()=>{alive=false;window.removeEventListener('focus',onFocus);window.removeEventListener('storage',onStorage);window.removeEventListener('balisa-settings-updated',onCustomUpdate)};
   },[]);
 
   if(pathname.startsWith('/admin'))return null;
