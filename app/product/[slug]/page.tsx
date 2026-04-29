@@ -35,8 +35,8 @@ export default async function ProductPage({params}:{params:{slug:string}}){
   const colors=(product.colors&&product.colors.length?product.colors:['Blue','Black','Grey','Brown','Burgundy','Red','Beige']).slice(0,7);
   const images=product.images?.length?product.images:[];
 
-  return <main className="pt-[102px]">
-    <section className="site-shell py-8 lg:py-10 grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-16 items-start">
+  return <main className="pt-[124px] md:pt-[102px]">
+    <section className="site-shell py-7 lg:py-10 grid lg:grid-cols-[1.05fr_.95fr] gap-12 lg:gap-16 items-start">
       <div>
         <div className="relative aspect-square product-bg overflow-hidden">
           <SmartImage src={images[0]} alt={product.name} contain imgClassName="p-0 scale-[1.12]"/>
@@ -47,8 +47,8 @@ export default async function ProductPage({params}:{params:{slug:string}}){
       </div>
 
       <aside className="lg:pt-3">
-        <h1 className="text-[24px] font-normal mb-6">{product.name}</h1>
-        <p className="text-[18px] mb-7">{formatPrice(product.price)} EUR</p>
+        <h1 className="text-[34px] md:text-[24px] leading-tight font-normal mb-5 md:mb-6">{product.name}</h1>
+        <p className="text-[24px] md:text-[18px] mb-7">{formatPrice(product.price)} EUR</p>
         <div className="flex gap-3 mb-8">{colors.map((c,i)=><span key={`${c}-${i}`} className="color-dot !w-[24px] !h-[24px]" style={{background:colourValue(c)}} title={c}/>)}</div>
         <div className="text-[15px] leading-8 text-black/68 max-w-[520px] space-y-5">
           <p>{product.description}</p>

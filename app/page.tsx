@@ -27,7 +27,7 @@ export default async function HomePage(){
   const right=settings.purpose_image_right||products[1]?.images?.[0]||hero;
   const overlayOpacity=Math.max(0,Math.min(0.75,Number(settings.hero_overlay_opacity||0.14)));
 
-  return <main className="pt-[102px] md:pt-[102px] lg:pt-[102px]" style={{background:settings.page_bg_color,color:settings.text_color}}>
+  return <main className="pt-[124px] md:pt-[124px] md:pt-[102px]" style={{background:settings.page_bg_color,color:settings.text_color}}>
     <section className="relative h-[calc(100svh-102px)] min-h-[590px] md:h-[calc(100svh-102px)] overflow-hidden bg-[var(--product-card-bg)]">
       <SmartImage src={hero} alt={`${settings.brand_name} hero`}/>
       <div className="absolute inset-0" style={{background:`rgba(0,0,0,${overlayOpacity})`}}/>
@@ -53,7 +53,7 @@ export default async function HomePage(){
 
         <Link
           href={settings.purpose_button_url||`mailto:${settings.contact_email}`}
-          className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 bg-white px-10 md:px-12 py-5 text-[16px] font-semibold tracking-[.01em] text-black shadow-[0_20px_45px_rgba(0,0,0,.10)] hover:bg-black hover:text-white transition-colors whitespace-nowrap min-w-[168px] text-center"
+          className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 bg-white px-8 md:px-12 py-4 md:py-5 text-[15px] md:text-[16px] font-semibold tracking-[.01em] text-black shadow-[0_20px_45px_rgba(0,0,0,.10)] hover:bg-black hover:text-white transition-colors whitespace-nowrap min-w-[150px] md:min-w-[168px] text-center"
         >
           {settings.purpose_button_label}
         </Link>

@@ -6,15 +6,15 @@ export default async function Footer(){
   const settings=await getSiteSettings();
 
   return <footer style={{background:settings.footer_bg_color,color:settings.footer_text_color}}>
-    <div className="site-shell py-16 lg:py-20">
-      <div className="grid gap-12 lg:grid-cols-[1.15fr_.85fr_.85fr_.85fr]">
+    <div className="site-shell py-14 lg:py-20">
+      <div className="grid gap-11 lg:grid-cols-[1.15fr_.85fr_.85fr_.85fr]">
         <div>
-          <Link href="/" className="inline-flex items-center mb-8">
+          <Link href="/" className="inline-flex items-center mb-7">
             {settings.logo_url
-              ? <Image src={settings.logo_url} alt={settings.brand_name} width={190} height={70} className="h-14 md:h-12 w-auto object-contain invert brightness-0" unoptimized/>
+              ? <Image src={settings.logo_url} alt={settings.brand_name} width={170} height={62} className="h-12 w-auto object-contain invert brightness-0" unoptimized/>
               : <span className="logo-word text-5xl">{settings.brand_name}</span>}
           </Link>
-          <p className="max-w-[520px] text-[18px] md:text-[16px] leading-[1.85] text-white/75">{settings.about_text}</p>
+          <p className="max-w-[520px] text-[16px] leading-[1.85] text-white/72">{settings.about_text}</p>
         </div>
 
         <div>
@@ -48,7 +48,7 @@ export default async function Footer(){
     </div>
 
     <div className="border-t border-white/10">
-      <div className="site-shell py-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-[12px] uppercase tracking-[.22em] text-white/45 text-center">
+      <div className="site-shell py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] uppercase tracking-[.22em] text-white/45 text-center">
         <span>© 2026 Balisa</span>
         <span>Handmade crochet bags</span>
       </div>

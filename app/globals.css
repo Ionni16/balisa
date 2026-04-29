@@ -224,3 +224,171 @@ button{background:none;border:0;padding:0;cursor:pointer}
   .header-actions{gap:18px}
   .hero-title{font-size:clamp(4rem,18vw,6.6rem)}
 }
+
+
+/* ===== v8 mobile polish overrides ===== */
+.announcement-bar{
+  min-height:30px;
+  padding:6px 14px;
+}
+.announcement-inner{
+  white-space:nowrap;
+  flex-wrap:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:14px;
+  line-height:1.15;
+}
+.announcement-arrow{width:auto;line-height:1}
+
+@media (max-width:767px){
+  .announcement-bar{
+    min-height:38px;
+    padding:7px 12px;
+  }
+  .announcement-inner{
+    display:flex;
+    flex-wrap:nowrap;
+    white-space:nowrap;
+    width:100%;
+    font-size:13.5px;
+    letter-spacing:.035em;
+    line-height:1.1;
+    overflow:hidden;
+  }
+  .announcement-text{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .announcement-arrow{
+    width:auto;
+    flex:0 0 auto;
+    padding-left:2px;
+  }
+
+  .header-row{
+    height:86px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:0;
+  }
+  .header-logo{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    width:160px;
+    max-width:42vw;
+    overflow:visible;
+  }
+  .header-logo img{
+    height:auto!important;
+    width:160px!important;
+    max-width:42vw!important;
+    max-height:54px;
+    object-fit:contain;
+  }
+  .header-logo .logo-word{
+    font-size:40px;
+    max-width:42vw;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .header-actions{
+    position:absolute;
+    right:18px;
+    top:50%;
+    transform:translateY(-50%);
+    gap:18px;
+    justify-content:flex-end;
+  }
+  .header-icon{
+    width:28px;
+    height:28px;
+  }
+  .header-icon svg{
+    width:28px;
+    height:28px;
+  }
+  .header-icon[aria-label="Cart"] span{
+    width:24px;
+    height:24px;
+    font-size:12px;
+    top:-11px;
+    right:-12px;
+  }
+  .mobile-only{display:inline-flex!important}
+  .hide-on-mobile{display:none!important}
+  .desktop-only{display:none!important}
+
+  .hero-title{
+    font-size:clamp(3.15rem,15.5vw,5.2rem);
+    line-height:.92;
+    letter-spacing:.01em;
+    max-width:92vw;
+  }
+
+  .purpose-title{
+    font-size:34px;
+    line-height:1.12;
+    letter-spacing:-.035em;
+  }
+
+  .care-card{
+    min-height:auto;
+    padding:28px 24px;
+  }
+  .care-card h3{
+    font-size:22px;
+    margin:18px 0 12px;
+  }
+  .care-card p{
+    font-size:17px;
+    line-height:1.55;
+  }
+
+  .footer-title{
+    font-size:12px;
+    margin-top:8px;
+    margin-bottom:18px;
+  }
+  .footer-links{
+    font-size:18px;
+    line-height:1.45;
+    gap:16px;
+  }
+  footer .site-shell{
+    padding-inline:28px;
+  }
+}
+
+@media (max-width:430px){
+  .announcement-inner{font-size:13px}
+  .header-logo{
+    width:150px;
+    max-width:40vw;
+  }
+  .header-logo img{
+    width:150px!important;
+    max-width:40vw!important;
+    max-height:50px;
+  }
+  .header-actions{gap:16px;right:18px}
+}
+
+@media (max-width:360px){
+  .header-logo{
+    width:132px;
+    max-width:38vw;
+  }
+  .header-logo img{
+    width:132px!important;
+    max-width:38vw!important;
+  }
+  .header-actions{gap:13px;right:14px}
+}
+
+html,body{max-width:100%;overflow-x:hidden}

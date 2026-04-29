@@ -18,7 +18,7 @@ async function getProducts(category?:string, search?:string):Promise<Product[]>{
 export default async function ShopPage({searchParams}:{searchParams:{category?:string;search?:string}}){
   const[settings,products]=await Promise.all([getSiteSettings(),getProducts(searchParams.category,searchParams.search)]);
   const active=searchParams.category||'';
-  return <main className="pt-[124px]">
+  return <main className="pt-[124px] md:pt-[102px]">
     <section className="site-shell py-10">
       <h1 className="text-[22px] font-normal">{searchParams.search?`Search: ${searchParams.search}`:settings.best_sellers_title}</h1>
     </section>
