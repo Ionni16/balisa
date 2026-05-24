@@ -33,19 +33,19 @@ export async function POST(req: NextRequest) {
       shipping_address_collection: {
         allowed_countries: ["IT", "FR", "DE", "ES", "AT", "CH", "BE", "NL"],
       },
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            fixed_amount: { amount: 500, currency: "eur" },
-            display_name: "Spedizione standard",
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 3 },
-              maximum: { unit: "business_day", value: 5 },
-            },
-          },
-        },
-      ],
+      // shipping_options: [
+      //   {
+      //     shipping_rate_data: {
+      //       type: "fixed_amount",
+      //       fixed_amount: { amount: 500, currency: "eur" },
+      //       display_name: "Spedizione standard",
+      //       delivery_estimate: {
+      //         minimum: { unit: "business_day", value: 3 },
+      //         maximum: { unit: "business_day", value: 5 },
+      //       },
+      //     },
+      //   },
+      // ],
       metadata: {
         customer_name: customer.name,
         customer_address: JSON.stringify({
