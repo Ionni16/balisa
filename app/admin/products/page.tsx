@@ -34,7 +34,15 @@ const EMPTY: Partial<Product> = {
   care: 'Spot clean gently with cold water.',
 };
 
-const CATS = ['clutch', 'beach', 'ibiza', 'tote', 'custom', 'mini', 'shoulder', 'crossbody'];
+const CATS = [
+  { value: 'clutch', label: 'clutch' },
+  { value: 'beach bags', label: 'beach bags' },
+  { value: 'ibiza', label: 'ibiza' },
+  { value: 'custom', label: 'custom' },
+  { value: 'mini', label: 'mini' },
+  { value: 'shoulder', label: 'shoulder' },
+  { value: 'crossbody', label: 'crossbody' },
+];
 
 const COLOR_OPTIONS = [
   { label: 'Blue', value: 'blue', hex: '#073763' },
@@ -376,17 +384,55 @@ export default function AdminProducts() {
                     <div className="grid gap-4 sm:grid-cols-2">
                       <label>
                         <FieldLabel>Category</FieldLabel>
+
                         <select
                           className={inputClass}
-                          value={editing.category || 'clutch'}
-                          onChange={(e) => setEditing({ ...editing, category: e.target.value })}
+                          value={
+                            CATS.some((category) => category.value === editing.category)
+                              ? editing.category
+                              : editing.category
+                                ? '__custom__'
+                                : 'clutch'
+                          }
+                          onChange={(e) => {
+                            const value = e.target.value;
+
+                            if (value === '__custom__') {
+                              setEditing({ ...editing, category: '' });
+                              return;
+                            }
+
+                            setEditing({ ...editing, category: value });
+                          }}
                         >
                           {CATS.map((category) => (
-                            <option className="text-black" key={category}>
-                              {category}
+                            <option className="text-black" key={category.value} value={category.value}>
+                              {category.label}
                             </option>
                           ))}
+
+                          <option className="text-black" value="__custom__">
+                            Custom category...
+                          </option>
                         </select>
+
+                        {!CATS.some((category) => category.value === editing.category) && (
+                          <input
+                            className={`${inputClass} mt-3`}
+                            value={editing.category || ''}
+                            onChange={(e) =>
+                              setEditing({
+                                ...editing,
+                                category: e.target.value.toLowerCase(),
+                              })
+                            }
+                            placeholder="Type a new category, e.g. beach bags"
+                          />
+                        )}
+
+                        <p className="mt-2 text-xs leading-5 text-neutral-400">
+                          Select an existing category or choose custom to type a new one manually.
+                        </p>
                       </label>
                       <div>
                         <FieldLabel>Colours visible on site</FieldLabel>

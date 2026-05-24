@@ -9,7 +9,12 @@ import {useEffect,useState} from 'react';
 import {DEFAULT_SETTINGS} from '@/lib/settings';
 import type {SiteSettings} from '@/lib/types';
 
-const links=[['/','Home'],['/shop','New In'],['/shop','Bags'],['/#contact','Custom Orders'],['/#about','Accessories']];
+const links = [
+  ["/", "Home"],
+  ["/shop", "Bags"],
+  ["/#contact", "Custom Orders"],
+  ["/#about", "Accessories"],
+];
 
 export default function Navbar(){
   const pathname=usePathname();
