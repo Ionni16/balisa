@@ -115,7 +115,7 @@ export async function POST(req: NextRequest) {
       customer_email: customer.email,
 
       shipping_address_collection: {
-        allowed_countries: allowedShippingCountries,
+        allowed_countries: [...allowedShippingCountries],
       },
 
       shipping_options: [
