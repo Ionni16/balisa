@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useCartStore } from "@/lib/store";
 import { formatPrice } from "@/lib/stripe";
-import Image from "next/image";
 import Link from "next/link";
 import { loadStripe } from "@stripe/stripe-js";
 import toast from "react-hot-toast";
@@ -278,14 +277,17 @@ export default function CheckoutPage() {
                     key={`${item.product.id}-${item.color}`}
                     className="flex gap-3"
                   >
-                    <div className="relative w-14 h-[68px] bg-cream-dark flex-shrink-0">
-                      {item.product.images[0] && (
-                        <Image
+                    <div className="relative w-16 h-20 bg-cream-dark flex-shrink-0 overflow-hidden">
+                      {item.product.images?.[0] ? (
+                        <img
                           src={item.product.images[0]}
                           alt={item.product.name}
-                          fill
-                          className="object-cover"
+                          className="h-full w-full object-cover"
                         />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-[10px] uppercase tracking-wider text-black/30">
+                          No image
+                        </div>
                       )}
                     </div>
 
