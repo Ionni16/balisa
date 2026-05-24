@@ -51,7 +51,12 @@ async function getProducts(category?: string, search?: string): Promise<Product[
 }
 
 async function getCategories(): Promise<[string, string][]> {
-  if (!supabase) return [['', 'All'], ...defaultCategories];
+  if (!supabase) {
+    return [
+      ['', 'All'],
+      ...defaultCategories.map(([value, label]) => [value, label] as [string, string]),
+    ];
+  }
 
   const { data } = await supabase
     .from('products')
